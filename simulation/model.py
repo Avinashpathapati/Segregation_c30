@@ -22,8 +22,10 @@ class Agent:
 
         if similar < self.model.homophily:
             self.model.grid.move_to_empty(self)
+            print('unhappy')
         else:
             self.model.happy += 1
+            print('happy')
 
 
 class Model:
