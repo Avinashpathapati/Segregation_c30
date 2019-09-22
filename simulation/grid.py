@@ -3,6 +3,7 @@ import random
 
 class Grid():
     def __init__(self, height, width):
+        # Initialize grid, create empty set for the empty places
         self.height = height
         self.width = width
 
@@ -17,19 +18,23 @@ class Grid():
                 self.empty_spots.add((x, y))
             self.grid.append(col)
 
+    # Return specific place in the grid
     def __getitem__(self, index):
         return self.grid[index]
 
+    # Place agent on the grid, remove from the empty_spots set
     def place_agent(self, pos, agent):
         x, y = pos
         self.grid[x][y] = agent
         self.empty_spots.discard(pos)
 
+    # Remove agent from grid, and add the coordinates to empty_spots set
     def remove_agent(self, pos, agent):
         x, y = pos
         self.grid[x][y] = None
         self.empty_spots.add(pos)
 
+    # Move agent to randomly one of the coordinates in empty_spots
     def move_to_empty(self, agent):
         pos = agent.pos
         new_pos = random.choice(sorted(self.empty_spots))
@@ -37,6 +42,7 @@ class Grid():
         agent.pos = new_pos
         self.remove_agent(pos, agent)
 
+    # Iterate over the neighbors of specific agent, return their coordinates
     def get_neighbors(self, pos):
         x, y = pos
         coordinates = set()

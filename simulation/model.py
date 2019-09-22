@@ -12,29 +12,32 @@ class Agent:
 
     def step(self):
         similar = 0
+        # Iterate over the neighbors of the agent
         for coordinates in self.model.grid.get_neighbors(self.pos):
             neighbor = self.model.scheduler.agents.get(coordinates)
             try:
+                # Check if the type of the agents is the same
                 if neighbor.type == self.type:
                     similar += 1
             except AttributeError:
                 pass
 
+        # If agent is unhappy move it, else it stays
         if similar < self.model.homophily:
             self.model.grid.move_to_empty(self)
-            print('unhappy')
         else:
             self.model.happy += 1
-            print('happy')
 
 
 class Model:
     def __init__(self, height=10, width=10, density=0.8, homophily=2):
+        # Initial parameters
         self.height = height
         self.width = width
         self.density = density
         self.homophily = homophily
 
+        # Define a grid and scheduler
         self.grid = grid.Grid(height, width)
         self.scheduler = scheduler.Scheduler(self)
         self.happy = 0
@@ -58,6 +61,7 @@ class Model:
                     else:
                         agent_type = 1
 
+                    # Add agents, place them on the grid and add them to the scheduler
                     agent = Agent((row, cell), self, agent_type)
                     self.grid.place_agent((row, cell), agent)
                     self.scheduler.add(agent)
@@ -68,6 +72,6 @@ class Model:
         self.happy = 0
         self.scheduler.step()
 
+        # If all the agents are happy, stop the simulation
         if self.happy == self.scheduler.get_agent_number():
-            print('letsgo')
             self.running = False
