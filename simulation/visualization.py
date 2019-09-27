@@ -31,20 +31,20 @@ class Visualization():
 # Initialize input parameters of model
 if __name__ == '__main__':
     model_params = {
-        "height": 10,
-        "width": 10,
+        "height": 4,
+        "width": 4,
         # Agent density, from 0.8 to 1.0
         "density": 0.8,
         # Homophily, from 2 to 8
-        "homophily": 2
+        "homophily": 1
     }
 
     model = Model(**model_params)
     viz = Visualization(model)
 
     # Run the model for 100 epochs
-    for i in range(100):
+    for i in range(10):
         if model.running:
-            print("Step:", i)
+            print("Step:", i+1)
             viz.step()
             print('----')

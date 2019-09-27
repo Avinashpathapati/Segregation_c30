@@ -22,11 +22,14 @@ class Agent:
             except AttributeError:
                 pass
 
+        print(similar)
         # If agent is unhappy move it, else it stays
         if similar < self.model.homophily:
             self.model.grid.move_to_empty(self)
         else:
             self.model.happy += 1
+
+        print(self.model.grid.empty_spots)
 
 
 class Model:
@@ -56,12 +59,14 @@ class Model:
                     # else:
                     #     agent_type = 2
 
+                    # For testing only 2 groups of agents
                     if rdm < 0.5:
                         agent_type = 0
                     else:
                         agent_type = 1
 
-                    # Add agents, place them on the grid and add them to the scheduler
+                    # Add agents, place them on the grid and
+                    # add them to the scheduler
                     agent = Agent((row, cell), self, agent_type)
                     self.grid.place_agent((row, cell), agent)
                     self.scheduler.add(agent)
