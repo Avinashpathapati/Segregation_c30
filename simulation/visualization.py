@@ -8,6 +8,7 @@ class Visualization():
         self.model = model
         #self.root.after(20,self.render)
         self.root = tk.Tk()
+        #contains all the grid states to print in GUI
         self.text_print_arr = []
         self.render()
 
@@ -16,7 +17,7 @@ class Visualization():
         self.render()
         #self.render()
 
-    # Print ascii text of 2D grid
+    # Construct ascii text of 2D grid to display in GUI
     def render(self):
         text = ""
         for y in range(self.model.grid.height):
@@ -30,35 +31,25 @@ class Visualization():
                     text += '0'
                 else:
                     text += '+'
-                # c = self.model.grid[y][x]
-                # if c is None:
-                #     tk.Label(root,text=" ", relief=tk.RIDGE, width=15).grid(row=y,column=x)
-                # elif c.type == 0:
-                #     tk.Label(root,text="X", relief=tk.RIDGE, width=15, fg="red").grid(row=y,column=x)
-                # elif c.type == 1:
-                #     tk.Label(root,text="O", relief=tk.RIDGE, width=15, fg="green").grid(row=y,column=x)
-                # else:
-                #     tk.Label(root,text="+", relief=tk.RIDGE, width=15, fg="red").grid(row=y,column=x)
-
-        # root.after(1000, lambda: root.destroy())
-        # tk.mainloop()
 
             text += '\n'
         self.text_print_arr.append(text)
-        #print(text)
 
+    #Method to print the Grid states in GUI
     def print_text_grid(self):
 
-        #to perform the first iteration
+        #to print the initial state in GUI
         self.text_gui(0)
-        #to update the same window again and again
+        #to update the same window with the rest of states
         self.root.after(3000, self.text_gui,1)
-        #to destroy finally
+
+        #to destroy finally not required now
         #self.root.after(1000, lambda: self.root.destroy())
 
 
     def text_gui(self,each_text_grid_itr):
 
+        #to print the initial state
         if each_text_grid_itr == 0:
             each_text_grid_print = self.text_print_arr[each_text_grid_itr]
             each_text_grid_row_split = each_text_grid_print.split('\n')
@@ -74,7 +65,7 @@ class Visualization():
                     else:
                         tk.Label(self.root,text="+", relief=tk.RIDGE, width=15, fg="red").grid(row=each_row,column=each_col)
 
-
+        #to print the rest of the states where text_gui is called recursively until self.text_print_arr is exhausted
         elif each_text_grid_itr < len(self.text_print_arr):
 
             each_text_grid_print = self.text_print_arr[each_text_grid_itr]
@@ -96,6 +87,7 @@ class Visualization():
             self.root.after(1000,self.text_gui,each_text_grid_itr)
 
         elif each_text_grid_itr == len(self.text_print_arr):
+            #below commented code is to automatically close the GUI at the end. Right now not required
             #self.root.after(1000, lambda: self.root.destroy())
             each_text_grid_itr = each_text_grid_itr + 1
 
@@ -124,9 +116,12 @@ if __name__ == '__main__':
             print('----')
 
     
+    # To print the grid states in GUI
     viz.print_text_grid()
+    #below commented code is to automatically close the GUI at the end. Right now not required
     #viz.root.after(1000, lambda: viz.root.destroy())
 
+    #tkinter event loop to make the window visible
     viz.root.mainloop()
     
     
