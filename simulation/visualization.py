@@ -9,6 +9,7 @@ class Visualization():
         self.model = model
         # self.root.after(20,self.render)
         self.root = tk.Tk()
+        #contains all the grid states to print in GUI
         self.text_print_arr = []
         self.render()
 
@@ -16,8 +17,9 @@ class Visualization():
         self.model.step()
         self.render()
 
-    # Print ascii text of 2D grid
+    # Construct ascii text of 2D grid to display in GUI
     def render(self):
+
         text = ""
         for y in range(self.model.grid.height):
             for x in range(self.model.grid.width):
@@ -31,35 +33,25 @@ class Visualization():
                 elif c.type == 2:
                     text += '#'
                 else:
-                    text += ' '
-                # c = self.model.grid[y][x]
-                # if c is None:
-                #     tk.Label(root,text=" ", relief=tk.RIDGE, width=15).grid(row=y,column=x)
-                # elif c.type == 0:
-                #     tk.Label(root,text="X", relief=tk.RIDGE, width=15, fg="red").grid(row=y,column=x)
-                # elif c.type == 1:
-                #     tk.Label(root,text="O", relief=tk.RIDGE, width=15, fg="green").grid(row=y,column=x)
-                # else:
-                #     tk.Label(root,text="+", relief=tk.RIDGE, width=15, fg="red").grid(row=y,column=x)
-
-        # root.after(1000, lambda: root.destroy())
-        # tk.mainloop()
+                    text += '+'
 
             text += '\n'
         self.text_print_arr.append(text)
-        # print(text)
 
+    #Method to print the Grid states in GUI
     def print_text_grid(self):
 
-        # to perform the first iteration
+        #to print the initial state in GUI
         self.text_gui(0)
-        # to update the same window again and again
+        #to update the same window with the rest of states
         self.root.after(3000, self.text_gui,1)
-        # to destroy finally
-        # self.root.after(1000, lambda: self.root.destroy())
+
+        #to destroy the window finally not required now
+        #self.root.after(1000, lambda: self.root.destroy())
 
     def text_gui(self, each_text_grid_itr):
 
+        #to print the initial state
         if each_text_grid_itr == 0:
             each_text_grid_print = self.text_print_arr[each_text_grid_itr]
             each_text_grid_row_split = each_text_grid_print.split('\n')
@@ -73,7 +65,9 @@ class Visualization():
                     elif each_text[each_col] == '0':
                         tk.Label(self.root,text="O", relief=tk.RIDGE, width=15, fg="green").grid(row=each_row,column=each_col)
                     else:
+                        #to print the rest of the states where text_gui is called recursively until self.text_print_arr is exhausted
                         tk.Label(self.root,text="#", relief=tk.RIDGE, width=15, fg="blue").grid(row=each_row,column=each_col)
+
         elif each_text_grid_itr < len(self.text_print_arr):
             each_text_grid_print = self.text_print_arr[each_text_grid_itr]
             each_text_grid_row_split = each_text_grid_print.split('\n')
@@ -93,7 +87,8 @@ class Visualization():
             self.root.after(1000, self.text_gui,each_text_grid_itr)
 
         elif each_text_grid_itr == len(self.text_print_arr):
-            # self.root.after(1000, lambda: self.root.destroy())
+            #below commented code is to automatically close the GUI at the end. Right now not required
+            #self.root.after(1000, lambda: self.root.destroy())
             each_text_grid_itr = each_text_grid_itr + 1
 
 
@@ -128,7 +123,7 @@ if __name__ == '__main__':
     model = Model(**model_params)
     viz = Visualization(model)
 
-    # Run the model for 100 epochs
+    # Run the model for 20 epochs
     for i in range(20):
         if model.running:
             print("Step:", i + 1)
@@ -139,8 +134,11 @@ if __name__ == '__main__':
     print("there are three different groups of agents, namely; students(X), adults(O) and elderly(#)")
     print("Each iteration the agents grow and if unhappy move to a random location, until they are all happy")
     print("or the simulation has run 20 epochs")
-
+    
+    # To print the grid states in GUI
     viz.print_text_grid()
+    #below commented code is to automatically close the GUI at the end. Right now not required
     # viz.root.after(1000, lambda: viz.root.destroy())
 
+    #tkinter event loop to make the window visible
     viz.root.mainloop()

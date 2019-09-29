@@ -24,6 +24,7 @@ class Agent:
             except AttributeError:
                 pass
 
+        print(similar)
         # If agent is unhappy move it, else it stays
         if similar < self.model.homophily:
             self.model.grid.move_to_empty(self)
@@ -76,7 +77,6 @@ class Model:
                     else:
                         agent_type = 2
                         agent = Agent((row, col), self, agent_type, age=self.ageing * 2)
-
                     # Add agents, place them on the grid and add them to the scheduler
                     self.grid.place_agent((row, col), agent)
                     self.scheduler.add(agent)
