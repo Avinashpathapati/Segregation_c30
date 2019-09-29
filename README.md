@@ -1,5 +1,4 @@
 # Design of Multi-Agents Systems
-
 ## Run instructions
 To run this program navigate to the simulation folder. Then type: python visualization.py
 
