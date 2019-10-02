@@ -1,0 +1,12 @@
+Avinash:
+    Square cells in the grid
+    Colors for agents
+Joppe:
+    Create a class for buildings and let them affect the agents
+    Add radius
+DJ:
+    Add sliders to GUI
+    Start/Stop and Reset buttons for simulation
+LEX:
+    Think of experiments (look for the parameters we can change in the simulation)
+    Look at report yes
