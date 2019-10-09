@@ -37,6 +37,7 @@ class Agent:
         # If agent is unhappy move it, else it stays
         if similar < self.model.homophily or within_radius is False:
             self.model.grid.move_to_empty(self)
+            self.model.moves += 1
         else:
             self.model.happy += 1
 
@@ -53,6 +54,7 @@ class Agent:
         # If the agent is too old it is removed from the simulation
         if self.type == 2 and self.age == self.model.ageing * 3:
             self.destroy = True
+            self.model.deaths +=1
 
 
 class Building:
@@ -75,7 +77,20 @@ class Model:
         # Define a grid and scheduler
         self.grid = grid.Grid(height, width)
         self.scheduler = scheduler.Scheduler(self)
+        
+        #Define values for data collection
         self.happy = 0
+        self.moves = 0
+        self.deaths = 0
+        self.births = 0
+        self.happy_plot = []
+        self.moves_plot = []
+        self.deaths_plot = []
+        self.births_plot = []
+        self.total_agents = []
+        self.adult_agents = []
+        self.young_agents = []
+        self.elderly_agents = []
 
         # Set up buildings
         # FOR NOW: Just create 3 different buildings,
@@ -116,6 +131,9 @@ class Model:
 
     def step(self):
         self.happy = 0
+        self.moves = 0
+        self.deaths = 0
+        self.births = 0
         self.scheduler.step()
 
         # If all the agents are happy, stop the simulation
