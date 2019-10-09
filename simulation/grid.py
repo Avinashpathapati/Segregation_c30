@@ -48,6 +48,7 @@ class Grid():
         self.empty_spots.add(agent.pos)
 
     # Move agent to randomly one of the coordinates in empty_spots
+    # NOTE: There has to be an empty spot or else the program fails
     def move_to_empty(self, agent):
         pos = agent.pos
         new_pos = random.choice(sorted(self.empty_spots))
@@ -61,8 +62,7 @@ class Grid():
         return (self.height * self.width) - num_none
 
     # Iterate over the neighbors of specific agent, return their coordinates
-    def get_neighbors(self, pos):
-        rad = 1
+    def get_neighbors(self, pos, rad):
         x, y = pos
         coordinates = []
         for neighbors_y in range(-rad, rad + 1):

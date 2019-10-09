@@ -26,6 +26,8 @@ class Visualization():
                 c = self.model.grid[y][x]
                 if c is None:
                     text += ' '
+                elif c.building:
+                    text += '9'
                 elif c.type == 0:
                     text += 'X'
                 elif c.type == 1:
@@ -34,7 +36,6 @@ class Visualization():
                     text += '#'
                 else:
                     text += '+'
-
             text += '\n'
         self.text_print_arr.append(text)
 
@@ -64,6 +65,8 @@ class Visualization():
                         tk.Label(self.root,text="X", relief=tk.RIDGE, width=15, fg="red").grid(row=each_row,column=each_col)
                     elif each_text[each_col] == '0':
                         tk.Label(self.root,text="O", relief=tk.RIDGE, width=15, fg="green").grid(row=each_row,column=each_col)
+                    elif each_text[each_col] == '9':
+                        tk.Label(self.root,text="9", relief=tk.RIDGE, width=15, fg="black").grid(row=each_row,column=each_col)
                     else:
                         #to print the rest of the states where text_gui is called recursively until self.text_print_arr is exhausted
                         tk.Label(self.root,text="#", relief=tk.RIDGE, width=15, fg="blue").grid(row=each_row,column=each_col)
@@ -80,6 +83,8 @@ class Visualization():
                         tk.Label(self.root,text="X", relief=tk.RIDGE, width=15, fg="red").grid(row=each_row,column=each_col)
                     elif each_text[each_col] == '0':
                         tk.Label(self.root,text="O", relief=tk.RIDGE, width=15, fg="green").grid(row=each_row,column=each_col)
+                    elif each_text[each_col] == '9':
+                        tk.Label(self.root,text="9", relief=tk.RIDGE, width=15, fg="black").grid(row=each_row,column=each_col)
                     else:
                         tk.Label(self.root,text="#", relief=tk.RIDGE, width=15, fg="blue").grid(row=each_row,column=each_col)
 
@@ -134,7 +139,7 @@ if __name__ == '__main__':
     print("there are three different groups of agents, namely; students(X), adults(O) and elderly(#)")
     print("Each iteration the agents grow and if unhappy move to a random location, until they are all happy")
     print("or the simulation has run 20 epochs")
-    
+
     # To print the grid states in GUI
     viz.print_text_grid()
     #below commented code is to automatically close the GUI at the end. Right now not required

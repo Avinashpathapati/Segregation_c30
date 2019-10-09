@@ -4,18 +4,19 @@ import scheduler
 
 
 class Agent:
-    def __init__(self, pos, model, agent_type, age, destroy=False):
+    def __init__(self, pos, model, agent_type, age, destroy=False, building=False):
         # Type student (0), adult (1), or elderly (2)
         self.pos = pos
         self.type = agent_type
         self.model = model
         self.age = age
         self.destroy = destroy
+        self.building = building
 
     def step(self):
         similar = 0
         # Iterate over the neighbors of the agent
-        for neighbor in self.model.grid.get_neighbors(self.pos):
+        for neighbor in self.model.grid.get_neighbors(self.pos, rad=1):
             # neighbor = self.model.scheduler.agents.get(coordinates)
             try:
                 # Check if the type of the agents is the same
@@ -24,9 +25,17 @@ class Agent:
             except AttributeError:
                 pass
 
-        print(similar)
+        # Check if one of the neighbors is a building with correct type
+        within_radius = False
+        for neighbor in self.model.grid.get_neighbors(self.pos, rad=2):
+            try:
+                if neighbor.type == self.type and neighbor.building:
+                    within_radius = True
+            except AttributeError:
+                pass
+
         # If agent is unhappy move it, else it stays
-        if similar < self.model.homophily:
+        if similar < self.model.homophily or within_radius is False:
             self.model.grid.move_to_empty(self)
         else:
             self.model.happy += 1
@@ -46,6 +55,13 @@ class Agent:
             self.destroy = True
 
 
+class Building:
+    def __init__(self, pos, model, building_type, building=True):
+        self.pos = pos
+        self.type = building_type
+        self.building = building
+
+
 class Model:
     def __init__(self, height=10, width=10, density=0.8, homophily=2, ageing=3, reproduction=0.5):
         # Initial parameters
@@ -61,22 +77,37 @@ class Model:
         self.scheduler = scheduler.Scheduler(self)
         self.happy = 0
 
+        # Set up buildings
+        # FOR NOW: Just create 3 different buildings,
+        # one for each type, in top left, top right, and middle under
+        coord = (int(self.width * 0.2), int(self.height * 0.2))
+        building = Building(coord, self, 0)
+        self.grid.place_agent(coord, building)
+
+        coord = (int(self.width * 0.2), int(self.height * 0.8))
+        building = Building(coord, self, 1)
+        self.grid.place_agent(coord, building)
+
+        coord = (int(self.width * 0.6), int(self.height * 0.6))
+        building = Building(coord, self, 2)
+        self.grid.place_agent(coord, building)
+
         # Set up agents
         for row in range(self.grid.width):
             for col in range(self.grid.height):
-                if random.random() < self.density:
+                if random.random() < self.density and self.grid[row][col] is None:
                     rdm = random.random()
                     # Randomly make agents student (0),
-                    # adults (1), or elderly (2)
+                    # adults (1), or elderly (2), or add building
                     if rdm < 0.33:
                         agent_type = 0
-                        agent = Agent((row, col), self, agent_type, age=0)
+                        agent = Agent((row, col), self, agent_type, age=random.randrange(3))
                     elif rdm > 0.66:
                         agent_type = 1
-                        agent = Agent((row, col), self, agent_type, age=self.ageing)
+                        agent = Agent((row, col), self, agent_type, age=self.ageing + random.randrange(3))
                     else:
                         agent_type = 2
-                        agent = Agent((row, col), self, agent_type, age=self.ageing * 2)
+                        agent = Agent((row, col), self, agent_type, age=int(self.ageing * 2) + random.randrange(3))
                     # Add agents, place them on the grid and add them to the scheduler
                     self.grid.place_agent((row, col), agent)
                     self.scheduler.add(agent)
