@@ -1,5 +1,6 @@
 import sys
 import tkinter as tk
+import matplotlib.pyplot as plt
 from model import Model
 
 
@@ -90,6 +91,17 @@ class Visualization():
             #below commented code is to automatically close the GUI at the end. Right now not required
             #self.root.after(1000, lambda: self.root.destroy())
             each_text_grid_itr = each_text_grid_itr + 1
+            
+    def plot_information(self, array, title, xlabel, ylabel, ymin, ymax):
+        plt.figure()
+        plt.suptitle(title)
+        axes= plt.gca()
+        axes.set_ylim([ymin,ymax])
+        axes.set_xlabel(xlabel)
+        axes.set_ylabel(ylabel)
+        plt.plot(array)
+        plt.show(block=False)
+
 
 
 # Initialize input parameters of model
@@ -124,7 +136,7 @@ if __name__ == '__main__':
     viz = Visualization(model)
 
     # Run the model for 20 epochs
-    for i in range(20):
+    for i in range(50):
         if model.running:
             print("Step:", i + 1)
             viz.step()
@@ -134,6 +146,15 @@ if __name__ == '__main__':
     print("there are three different groups of agents, namely; students(X), adults(O) and elderly(#)")
     print("Each iteration the agents grow and if unhappy move to a random location, until they are all happy")
     print("or the simulation has run 20 epochs")
+    
+    viz.plot_information(model.happy_plot, 'Percentage of happy agents',  'Epochs', '% Happy', 0,1)
+    viz.plot_information(model.moves_plot, 'Moves per epoch',  'Epochs', 'No Moves', 0,max(model.moves_plot))
+    viz.plot_information(model.deaths_plot, 'Deaths per Epoch',  'Epochs', 'No Deaths', 0,max(model.deaths_plot))
+    viz.plot_information(model.births_plot, 'Births per Epoch',  'Epochs', 'No Births', 0,max(model.births_plot))
+    viz.plot_information(model.total_agents, 'Total agents',  'Epochs', 'No Agents', 0,max(model.total_agents))
+    #viz.plot_information(model.adult_agents, 'Adult agents',  'Epochs', 'No Adult Agents', 0, max(model.adult_agents))
+    #viz.plot_information(model.young_agents, 'Young agents',  'Epochs', 'No Young Agents', 0, max(model.young_agents))
+    #viz.plot_information(model.elderly_agents, 'Elderly agents',  'Epochs', 'No Elderly Agents', 0, max(model.elderly_agents))
     
     # To print the grid states in GUI
     viz.print_text_grid()
