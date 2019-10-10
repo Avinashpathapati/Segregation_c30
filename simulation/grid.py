@@ -1,5 +1,5 @@
 import random
-
+import sys
 
 class Grid():
     def __init__(self, height, width):
@@ -34,6 +34,18 @@ class Grid():
         self.place_agent(pos, agent)
         agent.pos = pos
         self.remove_agent_by_pos(pos, agent)
+    
+    # Place agent on empty spot and return position
+    def place_agent_on_empty2(self, agent):
+        try:
+            pos = random.choice(sorted(self.empty_spots))
+        except:
+            print("No more empty spaces available, simulation is stopped.")
+            sys.exit()
+        self.place_agent(pos, agent)
+        agent.pos = pos
+        self.empty_spots.discard(pos)
+        return pos
 
     # Remove agent from grid, and add the coordinates to empty_spots set
     def remove_agent_by_pos(self, pos, agent):

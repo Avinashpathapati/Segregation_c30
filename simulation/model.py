@@ -4,7 +4,7 @@ import scheduler
 
 
 class Agent:
-    def __init__(self, pos, model, agent_type, age, destroy=False, building=False):
+    def __init__(self, pos, model, agent_type, age, destroy=False, building=False, update= False, old_pos=None):
         # Type student (0), adult (1), or elderly (2)
         self.pos = pos
         self.type = agent_type
@@ -12,6 +12,8 @@ class Agent:
         self.age = age
         self.destroy = destroy
         self.building = building
+        self.update = update
+        self.old_pos = old_pos
 
     def step(self):
         similar = 0
@@ -33,10 +35,19 @@ class Agent:
                     within_radius = True
             except AttributeError:
                 pass
+                
+        # If the agent is too old it is removed from the simulation
+        if self.type == 2 and self.age == self.model.ageing * 3:
+            self.destroy = True
+            self.model.deaths +=1
+            return
 
+            
         # If agent is unhappy move it, else it stays
         if similar < self.model.homophily or within_radius is False:
+            self.old_pos = self.pos
             self.model.grid.move_to_empty(self)
+            self.update = True
             self.model.moves += 1
         else:
             self.model.happy += 1
@@ -51,10 +62,7 @@ class Agent:
             else:
                 pass
 
-        # If the agent is too old it is removed from the simulation
-        if self.type == 2 and self.age == self.model.ageing * 3:
-            self.destroy = True
-            self.model.deaths +=1
+        
 
 
 class Building:
