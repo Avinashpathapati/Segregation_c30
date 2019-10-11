@@ -92,6 +92,8 @@ class Scheduler():
         counter = 0
         for i in range(sum(agent.type == 1 for agent in self.agents.values())):
             if random.random() <= self.model.reproduction:
+                if float(len(self.model.grid.empty_spots)) < 0.05*self.model.width*self.model.height: 
+                     break
                 counter += 1
                 # Create agents, place them on the grid and add them to the scheduler
                 agent = model.Agent((None, None), self.model, agent_type=0, age=0)

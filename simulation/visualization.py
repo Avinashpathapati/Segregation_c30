@@ -46,7 +46,7 @@ class Visualization():
         #to print the initial state in GUI
         self.text_gui(0)
         #to update the same window with the rest of states
-        self.root.after(3000, self.text_gui,1)
+        self.root.after(1000, self.text_gui,1)
 
         #to destroy the window finally not required now
         #self.root.after(1000, lambda: self.root.destroy())
@@ -106,6 +106,7 @@ class Visualization():
         axes.set_ylabel(ylabel)
         plt.plot(array)
         plt.show(block=False)
+        plt.savefig(title, format="svg")
 
 
 # Initialize input parameters of model
@@ -125,7 +126,7 @@ if __name__ == '__main__':
         reproduction = input("Enter percentage of reproducibility for adults (default = 0.5): ")
     else:
         # Else default parameters
-        dim, density, homophily, ageing, reproduction = 20, 0.66, 2, 3, 0.33
+        dim, density, homophily, ageing, reproduction = 20, 0.1, 2, 20, 0.05
 
     model_params = {
         "height": int(dim),
@@ -140,9 +141,13 @@ if __name__ == '__main__':
     viz = Visualization(model)
 
     # Run the model for 20 epochs
-    for i in range(100):
+    for i in range(500):
         if model.running:
             print("Step:", i + 1)
+            if i == 50:
+                model.reproduction = 0.85
+            elif i == 60:
+                model.reproduction = 0.05
             viz.step()
             print('----')
 
@@ -154,12 +159,12 @@ if __name__ == '__main__':
     
     viz.plot_information(model.happy_plot, 'Percentage of happy agents',  'Epochs', '% Happy', 0,1)
     viz.plot_information(model.moves_plot, 'Moves per epoch',  'Epochs', 'No Moves', 0,max(model.moves_plot))
-    #viz.plot_information(model.deaths_plot, 'Deaths per Epoch',  'Epochs', 'No Deaths', 0,max(model.deaths_plot))
-    #viz.plot_information(model.births_plot, 'Births per Epoch',  'Epochs', 'No Births', 0,max(model.births_plot))
+    viz.plot_information(model.deaths_plot, 'Deaths per Epoch',  'Epochs', 'No Deaths', 0,max(model.deaths_plot))
+    viz.plot_information(model.births_plot, 'Births per Epoch',  'Epochs', 'No Births', 0,max(model.births_plot))
     viz.plot_information(model.total_agents, 'Total agents',  'Epochs', 'No Agents', 0,(dim*dim))
-    #viz.plot_information(model.adult_agents, 'Adult agents',  'Epochs', 'No Adult Agents', 0, max(model.adult_agents))
-    #viz.plot_information(model.young_agents, 'Young agents',  'Epochs', 'No Young Agents', 0, max(model.young_agents))
-    #viz.plot_information(model.elderly_agents, 'Elderly agents',  'Epochs', 'No Elderly Agents', 0, max(model.elderly_agents))
+    viz.plot_information(model.adult_agents, 'Adult agents',  'Epochs', 'No Adult Agents', 0, max(model.adult_agents))
+    viz.plot_information(model.young_agents, 'Young agents',  'Epochs', 'No Young Agents', 0, max(model.young_agents))
+    viz.plot_information(model.elderly_agents, 'Elderly agents',  'Epochs', 'No Elderly Agents', 0, max(model.elderly_agents))
 
     # To print the grid states in GUI
     viz.print_text_grid()
