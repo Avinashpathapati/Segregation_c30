@@ -40,11 +40,11 @@ class Agent:
         if self.type == 2 and self.age == self.model.ageing * 3:
             self.destroy = True
             self.model.deaths +=1
-            return
+            #return
 
             
         # If agent is unhappy move it, else it stays
-        if similar < self.model.homophily or within_radius is False:
+        if (similar < self.model.homophily and within_radius is False):
             self.old_pos = self.pos
             self.model.grid.move_to_empty(self)
             self.update = True

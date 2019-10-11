@@ -63,7 +63,11 @@ class Grid():
     # NOTE: There has to be an empty spot or else the program fails
     def move_to_empty(self, agent):
         pos = agent.pos
-        new_pos = random.choice(sorted(self.empty_spots))
+        try:
+            new_pos = random.choice(sorted(self.empty_spots))
+        except:
+            print("No more empty spaces available, simulation is stopped.")
+            sys.exit()
         self.place_agent(new_pos, agent)
         agent.pos = new_pos
         self.remove_agent_by_pos(pos, agent)

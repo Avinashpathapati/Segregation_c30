@@ -49,13 +49,13 @@ class Scheduler():
             self.add(agent)
             agent.update = False
             
-        print("BEFORE ALTERATIONS ")
-        print("Number of happy agents: ", self.model.happy)
-        print("Number of unhappy agents: ", len(self.agents) - self.model.happy)
-        print("Number agents: ", len(self.agents))
-        print("Number of student agents: ", sum(agent.type == 0 for agent in self.agents.values()))
-        print("Number of adults agents: ", sum(agent.type == 1 for agent in self.agents.values()))
-        print("Number of elderly agents: ", sum(agent.type == 2 for agent in self.agents.values()))
+        #print("BEFORE ALTERATIONS ")
+        #print("Number of happy agents: ", self.model.happy)
+        #print("Number of unhappy agents: ", len(self.agents) - self.model.happy)
+        #print("Number agents: ", len(self.agents))
+        #print("Number of student agents: ", sum(agent.type == 0 for agent in self.agents.values()))
+        #print("Number of adults agents: ", sum(agent.type == 1 for agent in self.agents.values()))
+        #print("Number of elderly agents: ", sum(agent.type == 2 for agent in self.agents.values()))
         
         #Add plotting information:        
         self.model.happy_plot.append(float((self.model.happy)/len(self.agents))) 
@@ -104,14 +104,14 @@ class Scheduler():
         
         
         # Print summary of numbers of agents in the agent groups as well as number of new agents
-        print("AFTER ALTERATIONS ")
-        print("Number of happy agents: ", self.model.happy)
-        print("Number of unhappy agents: ", len(self.agents) - self.model.happy)
-        print("Number agents: ", len(self.agents))
-        print("Number of student agents: ", sum(agent.type == 0 for agent in self.agents.values()))
-        print("Number of adults agents: ", sum(agent.type == 1 for agent in self.agents.values()))
-        print("Number of elderly agents: ", sum(agent.type == 2 for agent in self.agents.values()))
-        print("Number of new agents: ", counter)
+        #print("AFTER ALTERATIONS ")
+        #print("Number of happy agents: ", self.model.happy)
+        #print("Number of unhappy agents: ", len(self.agents) - self.model.happy)
+        #print("Number agents: ", len(self.agents))
+        #print("Number of student agents: ", sum(agent.type == 0 for agent in self.agents.values()))
+        #print("Number of adults agents: ", sum(agent.type == 1 for agent in self.agents.values()))
+        #print("Number of elderly agents: ", sum(agent.type == 2 for agent in self.agents.values()))
+        #print("Number of new agents: ", counter)
 
         if not self.agents:
             self.model.running = False
