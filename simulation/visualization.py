@@ -1,8 +1,26 @@
 import sys
 import tkinter as tk
+from tkinter import Button
 from model import Model
 import matplotlib.pyplot as plt
 
+class Controller():
+    def __init__(self, master, model):
+        # Initialize model
+        self.model = model
+
+        # Define the window
+        self.master = master
+        master.title("Simulation Control")
+        master.geometry("300x500")
+        master.resizable(0, 0)
+
+        # Define buttons
+        self.stop_button = Button(master, text="Stop", command=self.stop)
+        self.stop_button.pack()
+
+    def stop(self, model):
+        model.running = False
 
 class Visualization():
     def __init__(self, model):
@@ -12,15 +30,9 @@ class Visualization():
         self.root = tk.Tk()
         #contains all the grid states to print in GUI
         self.text_print_arr = []
-        self.render()
-
-    def step(self):
-        self.model.step()
-        self.render()
 
     # Construct ascii text of 2D grid to display in GUI
     def render(self):
-
         text = ""
         for y in range(self.model.grid.height):
             for x in range(self.model.grid.width):
@@ -42,17 +54,14 @@ class Visualization():
 
     #Method to print the Grid states in GUI
     def print_text_grid(self):
-
         #to print the initial state in GUI
         self.text_gui(0)
         #to update the same window with the rest of states
         self.root.after(1000, self.text_gui,1)
-
         #to destroy the window finally not required now
         #self.root.after(1000, lambda: self.root.destroy())
 
     def text_gui(self, each_text_grid_itr):
-
         #to print the initial state
         if each_text_grid_itr == 0:
             each_text_grid_print = self.text_print_arr[each_text_grid_itr]
@@ -98,27 +107,34 @@ class Visualization():
             each_text_grid_itr = each_text_grid_itr + 1
             
     def plot_information(self, array, title, xlabel, ylabel, ymin, ymax):
+        # Set and check plots folder
+        import os
+        plots_folder = "plots/"
+        if not os.path.exists(plots_folder):
+            os.makedirs(plots_folder)
         plt.figure()
         plt.suptitle(title)
-        axes= plt.gca()
+        axes = plt.gca()
         axes.set_ylim([ymin,ymax])
         axes.set_xlabel(xlabel)
         axes.set_ylabel(ylabel)
         plt.plot(array)
-        plt.show(block=False)
-        plt.savefig(title, format="svg")
+        #plt.show(block=False)
+        plt.savefig(plots_folder + title, format="svg")
 
 
 # Initialize input parameters of model
 if __name__ == '__main__':
     print("Default parameters:")
-    print("     height/width:   10")
-    print("     density:        0.8")
-    print("     homophily:      2")
-    print("     ageing:         3")
-    print("     reproduction:   0.5")
+    print("\tepochs:\t\t100")
+    print("\theight/width:\t10")
+    print("\tdensity:\t0.8")
+    print("\thomophily:\t2")
+    print("\tageing:\t\t3")
+    print("\treproduction:\t0.5")
     default = input("Do you want default parameters? [y/n]: ")
     if default == 'n':
+        epochs = input("Enter the amount of epochs (default = 100): ")
         dim = input("Enter dimensions of the grid (default = 10): ")
         density = input("Enter percentage of density (default = 0.8): ")
         homophily = input("Enter number of neighbors agent requires to be happy (default = 2): ")
@@ -126,7 +142,7 @@ if __name__ == '__main__':
         reproduction = input("Enter percentage of reproducibility for adults (default = 0.5): ")
     else:
         # Else default parameters
-        dim, density, homophily, ageing, reproduction = 20, 0.1, 2, 20, 0.05
+        epochs, dim, density, homophily, ageing, reproduction = 100, 20, 0.1, 2, 20, 0.05
 
     model_params = {
         "height": int(dim),
@@ -137,26 +153,26 @@ if __name__ == '__main__':
         "reproduction": float(reproduction)
     }
 
+    # Initialize
     model = Model(**model_params)
     viz = Visualization(model)
+    # controlmaster = tk.Tk()
+    # controlwindow = Controller(controlmaster, model)
 
-    # Run the model for 20 epochs
-    for i in range(500):
-        if model.running:
+    # Run the model
+    if model.running:
+        for i in range(int(epochs)):
+            model.step()
             print("Step:", i + 1)
-            if i == 50:
-                model.reproduction = 0.85
-            elif i == 60:
-                model.reproduction = 0.05
-            viz.step()
             print('----')
+            viz.render()
 
     print("In the simulation the places on the grid represent locations an agent can live")
     print("there are three different groups of agents, namely; students(X), adults(O) and elderly(#)")
     print("Each iteration the agents grow and if unhappy move to a random location, until they are all happy")
     print("or the simulation has run 20 epochs")
 
-    
+    # Save the plots    
     viz.plot_information(model.happy_plot, 'Percentage of happy agents',  'Epochs', '% Happy', 0,1)
     viz.plot_information(model.moves_plot, 'Moves per epoch',  'Epochs', 'No Moves', 0,max(model.moves_plot))
     viz.plot_information(model.deaths_plot, 'Deaths per Epoch',  'Epochs', 'No Deaths', 0,max(model.deaths_plot))
@@ -170,6 +186,8 @@ if __name__ == '__main__':
     viz.print_text_grid()
     #below commented code is to automatically close the GUI at the end. Right now not required
     # viz.root.after(1000, lambda: viz.root.destroy())
-
     #tkinter event loop to make the window visible
     viz.root.mainloop()
+
+    # # Open controller window
+    # controlmaster.mainloop()
