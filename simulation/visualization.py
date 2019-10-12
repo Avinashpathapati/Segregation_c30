@@ -1,5 +1,6 @@
 import sys
 import tkinter as tk
+import numpy as np
 from model import Model
 import matplotlib.pyplot as plt
 
@@ -51,6 +52,89 @@ class Visualization():
         #to destroy the window finally not required now
         #self.root.after(1000, lambda: self.root.destroy())
 
+    def is_valid_row_or_col(self,row_cell,col_cell):
+
+        if row_cell < 0 or row_cell >= self.model.grid.height:
+            return False
+
+        if col_cell < 0 or col_cell >= self.model.grid.width:
+            return False
+
+        return True
+
+    def check_facility_in_neighbourhood(self,cell_row,cell_col):
+
+        if self.is_valid_row_or_col(cell_row-1,cell_col):
+
+            c = self.model.grid[cell_row-1][cell_col]
+
+            if not c is None and c.building == 1:
+                return 1
+            if not c is None and c.building == 2:
+                return 2
+
+        if self.is_valid_row_or_col(cell_row-1,cell_col-1):
+
+            c = self.model.grid[cell_row-1][cell_col-1]
+            if not c is None and c.building == 1:
+                return 1
+            if not c is None and c.building == 2:
+                return 2
+
+        if self.is_valid_row_or_col(cell_row-1,cell_col+1):
+
+            c = self.model.grid[cell_row-1][cell_col+1]
+
+            if not c is None and c.building == 1:
+                return 1
+            if not c is None and c.building == 2:
+                return 2
+
+        if self.is_valid_row_or_col(cell_row,cell_col-1):
+
+            c = self.model.grid[cell_row][cell_col-1]
+            if not c is None and c.building == 1:
+                return 1
+            if not c is None and c.building == 2:
+                return 2
+
+           
+
+        if self.is_valid_row_or_col(cell_row,cell_col+1):
+
+            c = self.model.grid[cell_row][cell_col+1]
+            if not c is None and c.building == 1:
+                return 1
+            if not c is None and c.building == 2:
+                return 2
+
+        if self.is_valid_row_or_col(cell_row+1,cell_col-1):
+
+            c = self.model.grid[cell_row+1][cell_col-1]
+            if not c is None and c.building == 1:
+                return 1
+            if not c is None and c.building == 2:
+                return 2
+
+        if self.is_valid_row_or_col(cell_row+1,cell_col+1):
+
+            c = self.model.grid[cell_row+1][cell_col+1]
+            if not c is None and c.building == 1:
+                return 1
+            if not c is None and c.building == 2:
+                return 2
+
+        if self.is_valid_row_or_col(cell_row+1,cell_col):
+
+            c = self.model.grid[cell_row+1][cell_col]
+            if not c is None and c.building == 1:
+                return 1
+            if not c is None and c.building == 2:
+                return 2
+        return -1
+
+
+
     def text_gui(self, each_text_grid_itr):
 
         #to print the initial state
@@ -61,17 +145,33 @@ class Visualization():
                 each_text = each_text_grid_row_split[each_row]
                 for each_col in range(len(each_text)):
                     if each_text[each_col] == ' ':
-                        tk.Label(self.root,text=" ", relief=tk.RIDGE, width=15).grid(row=each_row,column=each_col)
+                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
+                            tk.Label(self.root,text=" ", relief=tk.SUNKEN, width=5, fg="black", borderwidth=2).grid(row=each_row,column=each_col)
+                        else:
+                            tk.Label(self.root,text=" ", relief=tk.RIDGE, width=5).grid(row=each_row,column=each_col)
+
                     elif each_text[each_col] == 'X':
-                        tk.Label(self.root,text="X", relief=tk.RIDGE, width=15, fg="red").grid(row=each_row,column=each_col)
+                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
+                            tk.Label(self.root,text="X", relief=tk.SUNKEN, width=5, fg="black", bg="red", borderwidth=2).grid(row=each_row,column=each_col)
+                        else:
+                            tk.Label(self.root,text="X", relief=tk.RIDGE, width=5, fg="red", bg="red").grid(row=each_row,column=each_col)
+
                     elif each_text[each_col] == '0':
-                        tk.Label(self.root,text="O", relief=tk.RIDGE, width=15, fg="green").grid(row=each_row,column=each_col)
+                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
+                            tk.Label(self.root,text="O", relief=tk.SUNKEN, width=5, fg="black", bg="green", borderwidth=2).grid(row=each_row,column=each_col)
+                        else:
+                            tk.Label(self.root,text="O", relief=tk.RIDGE, width=5, fg="green", bg="green").grid(row=each_row,column=each_col)
+
                     elif each_text[each_col] == '9':
-                        tk.Label(self.root,text="9", relief=tk.RIDGE, width=15, fg="black").grid(row=each_row,column=each_col)
+                        tk.Label(self.root,text="9", relief=tk.SUNKEN, width=5, bg="black", borderwidth=2).grid(row=each_row,column=each_col)
                     else:
                         #to print the rest of the states where text_gui is called recursively until self.text_print_arr is exhausted
-                        tk.Label(self.root,text="#", relief=tk.RIDGE, width=15, fg="blue").grid(row=each_row,column=each_col)
+                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
+                            tk.Label(self.root,text="#", relief=tk.SUNKEN, width=5, fg="black", bg="blue", borderwidth=2).grid(row=each_row,column=each_col)
+                        else:
+                            tk.Label(self.root,text="#", relief=tk.RIDGE, width=5, fg="blue", bg="blue").grid(row=each_row,column=each_col)
 
+        #to print the rest of the states
         elif each_text_grid_itr < len(self.text_print_arr):
             each_text_grid_print = self.text_print_arr[each_text_grid_itr]
             each_text_grid_row_split = each_text_grid_print.split('\n')
@@ -79,16 +179,33 @@ class Visualization():
                 each_text = each_text_grid_row_split[each_row]
                 for each_col in range(len(each_text)):
                     if each_text[each_col] == ' ':
-                        tk.Label(self.root,text=" ", relief=tk.RIDGE, width=15).grid(row=each_row,column=each_col)
-                    elif each_text[each_col] == 'X':
-                        tk.Label(self.root,text="X", relief=tk.RIDGE, width=15, fg="red").grid(row=each_row,column=each_col)
-                    elif each_text[each_col] == '0':
-                        tk.Label(self.root,text="O", relief=tk.RIDGE, width=15, fg="green").grid(row=each_row,column=each_col)
-                    elif each_text[each_col] == '9':
-                        tk.Label(self.root,text="9", relief=tk.RIDGE, width=15, fg="black").grid(row=each_row,column=each_col)
-                    else:
-                        tk.Label(self.root,text="#", relief=tk.RIDGE, width=15, fg="blue").grid(row=each_row,column=each_col)
+                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
+                            tk.Label(self.root,text=" ", relief=tk.SOLID, width=5, fg="black", borderwidth=2).grid(row=each_row,column=each_col)
+                        else:
+                            tk.Label(self.root,text=" ", relief=tk.RIDGE, width=5).grid(row=each_row,column=each_col)
 
+                    elif each_text[each_col] == 'X':
+                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
+                            tk.Label(self.root,text="X", relief=tk.SOLID, width=5, fg="black", bg="red", borderwidth=2).grid(row=each_row,column=each_col)
+                        else:
+                            tk.Label(self.root,text="X", relief=tk.RIDGE, width=5, fg="red", bg="red").grid(row=each_row,column=each_col)
+
+                    elif each_text[each_col] == '0':
+                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
+                            tk.Label(self.root,text="O", relief=tk.SOLID, width=5, fg="black", bg="green", borderwidth=2).grid(row=each_row,column=each_col)
+                        else:
+                            tk.Label(self.root,text="O", relief=tk.RIDGE, width=5, fg="green", bg="green").grid(row=each_row,column=each_col)
+
+                    elif each_text[each_col] == '9':
+                        tk.Label(self.root,text="9", relief=tk.SOLID, width=5, bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
+
+                    else:
+                        #to print the rest of the states where text_gui is called recursively until self.text_print_arr is exhausted
+                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
+                            tk.Label(self.root,text="#", relief=tk.SOLID, width=5, fg="black", bg="blue", borderwidth=2).grid(row=each_row,column=each_col)
+                        else:
+                            tk.Label(self.root,text="#", relief=tk.RIDGE, width=5, fg="blue", bg="blue").grid(row=each_row,column=each_col)
+                    
             each_text_grid_itr = each_text_grid_itr + 1
             self.root.after(1000, self.text_gui,each_text_grid_itr)
 
