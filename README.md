@@ -2,8 +2,9 @@
 
 ## Running this software
 ### Preparations
-Please create a virtual environment in which python version 3.7.4 is used. Once that environment is active, clone this repository and navigate to `Segregation_c30/`. Now run the following commands:
+Please create a virtual environment in which python version 3.7.4 is used. Once that environment is active, clone this repository and use the following commands:
 ```
+cd Segregation_c30/
 git checkout development
 pip install -r requirements.txt
 ```
