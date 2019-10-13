@@ -1,6 +1,7 @@
 import random
 import model
 from collections import OrderedDict
+import sys
 
 
 class Scheduler():
@@ -57,6 +58,11 @@ class Scheduler():
         #print("Number of adults agents: ", sum(agent.type == 1 for agent in self.agents.values()))
         #print("Number of elderly agents: ", sum(agent.type == 2 for agent in self.agents.values()))
         
+        # Prevent 0-agent crash
+        if len(self.agents) == 0:
+            print("Number of agents reached zero, exiting..")
+            sys.exit()
+
         #Add plotting information:        
         self.model.happy_plot.append(float((self.model.happy)/len(self.agents))) 
         self.model.moves_plot.append(self.model.moves)
