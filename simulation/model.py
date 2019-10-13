@@ -41,7 +41,6 @@ class Agent:
             self.destroy = True
             self.model.deaths +=1
             #return
-
             
         # If agent is unhappy move it, else it stays
         if (similar < self.model.homophily and within_radius is False):
@@ -62,15 +61,11 @@ class Agent:
             else:
                 pass
 
-        
-
-
 class Building:
     def __init__(self, pos, model, building_type, building=True):
         self.pos = pos
         self.type = building_type
         self.building = building
-
 
 class Model:
     def __init__(self, height=10, width=10, density=0.8, homophily=2, ageing=3, reproduction=0.5):

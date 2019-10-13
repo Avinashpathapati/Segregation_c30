@@ -288,6 +288,7 @@ if __name__ == '__main__':
     # GUI
     print("\n[gui]\tUse CTRL+C here to stop the simulation replay")
     print("[gui]\tStarting replay...")
+    
     # To print the grid states in GUI
     viz.print_text_grid()
     #below commented code is to automatically close the GUI at the end. Right now not required
