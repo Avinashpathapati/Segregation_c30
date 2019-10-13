@@ -6,25 +6,83 @@ from model import Model
 import matplotlib.pyplot as plt
 
 # We want to implement another window to control the simulation replay
-# WIP
 class Controller():
-    def __init__(self, master, model):
+    def __init__(self, master, model, all_frames):
+        # Preset parameters
+        btn_height, btn_width = (1, 15)
         # Initialize model
         self.model = model
         # Define the window
         self.master = master
-        master.title("Simulation Control")
-        master.geometry("300x500")
+        master.title("Control Panel")
+        master.geometry("200x140")
         master.resizable(0, 0)
-        # Define buttons
-        self.stop_button = Button(master, text="Stop", command=self.stop)
+        ### Define buttons
+        # Exit Program
+        self.exit_button = Button(master, text="Exit Program", \
+            command=self.exit_program, height = btn_height, width = btn_width)
+        self.exit_button.pack()
+        # Print Info
+        self.info_button = Button(master, text="Print Info", \
+            command=self.print_info, height = btn_height, width = 15)
+        self.info_button.pack()
+        # Make Plots
+        self.plots_button = Button(master, text="Make Plots", \
+            command=lambda: self.make_plots(model), height = btn_height, width = btn_width)
+        self.plots_button.pack()
+        # Start Replay
+        self.replay_button = Button(master, text="Start Replay", \
+            command=lambda: self.start_replay(model, all_frames), height = btn_height, width = btn_width)
+        self.replay_button.pack()
+        # Stop Replay
+        self.stop_button = Button(master, text="Stop Replay", \
+            command=self.stop_replay, height = btn_height, width = btn_width)
         self.stop_button.pack()
-    # Try to stop the running model
-    def stop(self, model):
-        model.running = False
+
+    # Kill the entire program
+    def exit_program(self):
+        print("[ctrl]\tShutting down\n")
+        sys.exit()
+    # Print interesting information
+    def print_info(self):
+        print()
+        print("[info]\tThere are 3 different groups of agents:")
+        print("[info]\t\tstudents (green)\tadults (blue)\telderly (red)")
+        print("[info]\tIn the simulation, squares represent locations an agent can live")
+        print("[info]\tEach iteration the agents grow and if unhappy move to a random location")
+        print("[info]\tBlack tiles represent buildings, with black border being their area of effect")
+        print("[info]\tAgents living near a building (within black lines) are considered happy")
+        print("[info]\tAgents are also happy when their homophily requirement is met")
+        print("[info]\tThe reproduction variable is a chance for a single adult to spawn a new student")    
+        print()
+    # Make plots given model information
+    def make_plots(self, model):
+        plot_information(model.happy_plot, 'Percentage of happy agents',  'Epochs', '% Happy', 0,1)
+        plot_information(model.moves_plot, 'Moves per epoch',  'Epochs', 'No Moves', 0,max(model.moves_plot))
+        plot_information(model.deaths_plot, 'Deaths per Epoch',  'Epochs', 'No Deaths', 0,max(model.deaths_plot))
+        plot_information(model.births_plot, 'Births per Epoch',  'Epochs', 'No Births', 0,max(model.births_plot))
+        plot_information(model.total_agents, 'Total agents',  'Epochs', 'No Agents', 0,(int(dim)*int(dim)))
+        plot_information(model.adult_agents, 'Adult agents',  'Epochs', 'No Adult Agents', 0, max(model.adult_agents))
+        plot_information(model.young_agents, 'Young agents',  'Epochs', 'No Young Agents', 0, max(model.young_agents))
+        plot_information(model.elderly_agents, 'Elderly agents',  'Epochs', 'No Elderly Agents', 0, max(model.elderly_agents))
+        print("[plots]\tNew plots were generated and stored in simulation/plots/")    
+    # Start the replay gui
+    def start_replay(self, model, all_frames):
+        # Initialize replay windows
+        viz = Visualization(model, all_frames)
+        # To print the initial state in GUI
+        viz.print_text_grid()
+        # Tkinter event loop to make the window visible
+        viz.root.mainloop()
+    # Try to stop the GUI if running, WIP
+    def stop_replay(self):
+        print("[error]\tThis functionality has not been implemented yet")
+        print("[error]\tExit a replay by clicking the red x of its window")
+        print("[error]\tIgnore the error that follows, the Start Replay button will still work!")
+
 
 class Visualization():
-    def __init__(self, model):
+    def __init__(self, model, all_frames):
         # Initialize model
         self.model = model
         # self.root.after(20,self.render)
@@ -32,7 +90,7 @@ class Visualization():
         self.root.title("Segregation Simulation Replay")
         self.root.resizable(0, 0)
         #contains all the grid states to print in GUI
-        self.text_print_arr = []
+        self.text_print_arr = all_frames
 
     # Construct ascii text of 2D grid to display in GUI
     def render(self):
@@ -202,21 +260,44 @@ class Visualization():
             #self.root.after(1000, lambda: self.root.destroy())
             each_text_grid_itr = each_text_grid_itr + 1
             
-    def plot_information(self, array, title, xlabel, ylabel, ymin, ymax):
-        # Set and check plots folder
-        import os
-        plots_folder = "plots/"
-        if not os.path.exists(plots_folder):
-            os.makedirs(plots_folder)
-        plt.figure()
-        plt.suptitle(title)
-        axes = plt.gca()
-        axes.set_ylim([ymin,ymax])
-        axes.set_xlabel(xlabel)
-        axes.set_ylabel(ylabel)
-        plt.plot(array)
-        #plt.show(block=False)
-        plt.savefig(plots_folder + title, format="svg")
+
+# Generic function to generate plots using matplotlib
+def plot_information(array, title, xlabel, ylabel, ymin, ymax):
+    # Set and check plots folder
+    import os
+    plots_folder = "plots/"
+    if not os.path.exists(plots_folder):
+        os.makedirs(plots_folder)
+    plt.figure()
+    plt.suptitle(title)
+    axes = plt.gca()
+    axes.set_ylim([ymin,ymax])
+    axes.set_xlabel(xlabel)
+    axes.set_ylabel(ylabel)
+    plt.plot(array)
+    #plt.show(block=False)
+    plt.savefig(plots_folder + title, format="svg")
+
+# Construct ascii text of 2D grid to display in GUI
+def store_frame(model):
+    text = ""
+    for y in range(model.grid.height):
+        for x in range(model.grid.width):
+            c = model.grid[y][x]
+            if c is None:
+                text += ' '
+            elif c.building:
+                text += '9'
+            elif c.type == 0:
+                text += 'X'
+            elif c.type == 1:
+                text += '0'
+            elif c.type == 2:
+                text += '#'
+            else:
+                text += '+'
+        text += '\n'
+    return text
 
 
 # Initialize input parameters of model
@@ -251,51 +332,20 @@ if __name__ == '__main__':
     }
 
     # Initialize
+    all_frames = []
     model = Model(**model_params)
-    viz = Visualization(model)
-    # controlmaster = tk.Tk()
-    # controlwindow = Controller(controlmaster, model)
+    print()
 
     # Run the model
-    print()
     if model.running:
         for i in range(int(epochs)):
             model.step()
             print(f"[model]\tSimulating epoch {i+1}/{epochs}", end='\r')
-            viz.render()
-    print("\n[model]\tSimulations complete!\n")
+            all_frames.append(store_frame(model))
+    print("\n[model]\tSimulations complete!")
 
-    print("[info]\tThere are 3 different groups of agents:")
-    print("[info]\t\tstudents (green)\tadults (blue)\telderly (red)")
-    print("[info]\tIn the simulation, squares represent locations an agent can live")
-    print("[info]\tEach iteration the agents grow and if unhappy move to a random location")
-    print("[info]\tBlack tiles represent buildings, with black border being their area of effect")
-    print("[info]\tAgents living near a building (within black lines) are considered happy")
-    print("[info]\tAgents are also happy when their homophily requirement is met")
-    print("[info]\tThe reproduction variable is a chance for a single adult to spawn a new student")
-
-    # Save the plots    
-    viz.plot_information(model.happy_plot, 'Percentage of happy agents',  'Epochs', '% Happy', 0,1)
-    viz.plot_information(model.moves_plot, 'Moves per epoch',  'Epochs', 'No Moves', 0,max(model.moves_plot))
-    viz.plot_information(model.deaths_plot, 'Deaths per Epoch',  'Epochs', 'No Deaths', 0,max(model.deaths_plot))
-    viz.plot_information(model.births_plot, 'Births per Epoch',  'Epochs', 'No Births', 0,max(model.births_plot))
-    viz.plot_information(model.total_agents, 'Total agents',  'Epochs', 'No Agents', 0,(int(dim)*int(dim)))
-    viz.plot_information(model.adult_agents, 'Adult agents',  'Epochs', 'No Adult Agents', 0, max(model.adult_agents))
-    viz.plot_information(model.young_agents, 'Young agents',  'Epochs', 'No Young Agents', 0, max(model.young_agents))
-    viz.plot_information(model.elderly_agents, 'Elderly agents',  'Epochs', 'No Elderly Agents', 0, max(model.elderly_agents))
-    print("\n[plots]\tNew plots were generated and stored in simulation/plots/")
-
-    # GUI
-    print("\n[gui]\tUse CTRL+C here to stop the simulation replay")
-    print("[gui]\tStarting replay...")
-    
-    # To print the grid states in GUI
-    viz.print_text_grid()
-    #below commented code is to automatically close the GUI at the end. Right now not required
-    # viz.root.after(1000, lambda: viz.root.destroy())
-    #tkinter event loop to make the window visible
-    viz.root.mainloop()
-    print("[gui]\t Replay done")
-
-    # # Open controller window
-    # controlmaster.mainloop()
+    # Open controller window
+    print("\n[ctrl]\tLaunching control panel")
+    controlmaster = tk.Tk()
+    controlwindow = Controller(controlmaster, model, all_frames)
+    controlmaster.mainloop()

@@ -6,13 +6,13 @@ Please create a virtual environment in which python version 3.7.4 is used. Once 
 ```
 pip install -r requirements.txt
 ```
-### Start  it
+### Start it
 Navigate to the `simulation/` folder and run the `visualization.py` file:
 ```
 cd simulation/
 python visualization.py
 ```
-In the terminal a list of completed epochs is shown. Once the set number of epochs has passed a window will open, which will show a replay of what happened.
+Once the program is started, it will ask for some parameters. Press the `Enter`-key in order to proceed and use the defaults. Now, a control panel will open. Here, one can print useful information to the terminal, generate plots, and start/stop the replay of the simulation.
 
 ### Stop it
-To close or exit this program at any point, use `CTRL+C` in the terminal.
+To close or exit this program at any point, use the `Exit Program` button or `CTRL+C` in the terminal.
