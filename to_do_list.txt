@@ -1,0 +1,17 @@
+Avinash:
+    Square cells in the grid
+    Colors for agents
+Joppe:
+    Create a class for buildings and let them affect the agents YES
+    Add radius YES
+    If agent is within radius he don't care about his neighbors YES
+    Make the age of agents vary within their agent group type YES
+DJ:
+    Add sliders to GUI
+    Start/Stop and Reset buttons for simulation
+LEX:
+    Think of experiments (look for the parameters we can change in the simulation)
+    Look at report yes
+LATER:
+Joppe:
+    Make plots for happiness per group
