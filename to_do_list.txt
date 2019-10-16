@@ -1,17 +1,14 @@
 Avinash:
-    Square cells in the grid
-    Colors for agents
+    White letters in black tiles
+        (U)niversity    (H)ospital  (O)ffice
+    Only agents affected by an agent should get the same letter
+    Speed up the vizualisation
 Joppe:
-    Create a class for buildings and let them affect the agents YES
-    Add radius YES
-    If agent is within radius he don't care about his neighbors YES
-    Make the age of agents vary within their agent group type YES
+    Look how the radius is handled
+    Peer review before oct20
 DJ:
-    Add sliders to GUI
-    Start/Stop and Reset buttons for simulation
-LEX:
-    Think of experiments (look for the parameters we can change in the simulation)
-    Look at report yes
-LATER:
-Joppe:
-    Make plots for happiness per group
+    Add a legend window
+    Improve our report
+Lex:
+    Define a measure of segregation/clusters
+    Import our report
