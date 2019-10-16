@@ -53,7 +53,7 @@ class Controller():
         print("[info]\tBlack tiles represent buildings, with black border being their area of effect")
         print("[info]\tAgents living near a building (within black lines) are considered happy")
         print("[info]\tAgents are also happy when their homophily requirement is met")
-        print("[info]\tThe reproduction variable is a chance for a single adult to spawn a new student")    
+        print("[info]\tThe reproduction variable is a chance for a single adult to spawn a new student")
         print()
     # Make plots given model information
     def make_plots(self, model):
@@ -65,7 +65,7 @@ class Controller():
         plot_information(model.adult_agents, 'Adult agents',  'Epochs', 'No Adult Agents', 0, max(model.adult_agents))
         plot_information(model.young_agents, 'Young agents',  'Epochs', 'No Young Agents', 0, max(model.young_agents))
         plot_information(model.elderly_agents, 'Elderly agents',  'Epochs', 'No Elderly Agents', 0, max(model.elderly_agents))
-        print("[plots]\tNew plots were generated and stored in simulation/plots/")    
+        print("[plots]\tNew plots were generated and stored in simulation/plots/")
     # Start the replay gui
     def start_replay(self, model, all_frames):
         # Initialize replay windows
@@ -251,7 +251,7 @@ class Visualization():
                             tk.Label(self.root,text="#", relief=tk.SOLID, width=2, fg="black", bg="blue", borderwidth=2).grid(row=each_row,column=each_col)
                         else:
                             tk.Label(self.root,text="#", relief=tk.RIDGE, width=2, fg="blue", bg="blue").grid(row=each_row,column=each_col)
-                    
+
             each_text_grid_itr = each_text_grid_itr + 1
             self.root.after(750, self.text_gui,each_text_grid_itr)
 
@@ -259,7 +259,7 @@ class Visualization():
             #below commented code is to automatically close the GUI at the end. Right now not required
             #self.root.after(1000, lambda: self.root.destroy())
             each_text_grid_itr = each_text_grid_itr + 1
-            
+
 
 # Generic function to generate plots using matplotlib
 def plot_information(array, title, xlabel, ylabel, ymin, ymax):
@@ -309,6 +309,7 @@ if __name__ == '__main__':
     print("[init]\t\thomophily:\t2")
     print("[init]\t\tageing:\t\t3")
     print("[init]\t\treproduction:\t0.5")
+    print("[init]\t\tradius:\t2")
     default = input("[init]\tDo you want default parameters? [y/n]: ")
     if default == 'n':
         epochs = input("[init]\tEnter the amount of epochs (default = 100): ")
@@ -317,6 +318,7 @@ if __name__ == '__main__':
         homophily = input("[init]\tEnter number of neighbors agent requires to be happy (default = 2): ")
         ageing = input("[init]\tEnter number of epochs it takes for agent to advance to next group (default = 3): ")
         reproduction = input("[init]\tEnter percentage of reproducibility for adults (default = 0.5): ")
+        radius = input("[init]\tEnter radius effect of buildings (default = 2): ")
     else:
         # Else default parameters
         #                                                       DON'T PUSH THESE CHANGED!
