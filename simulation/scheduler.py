@@ -50,13 +50,6 @@ class Scheduler():
             self.add(agent)
             agent.update = False
             
-        #print("BEFORE ALTERATIONS ")
-        #print("Number of happy agents: ", self.model.happy)
-        #print("Number of unhappy agents: ", len(self.agents) - self.model.happy)
-        #print("Number agents: ", len(self.agents))
-        #print("Number of student agents: ", sum(agent.type == 0 for agent in self.agents.values()))
-        #print("Number of adults agents: ", sum(agent.type == 1 for agent in self.agents.values()))
-        #print("Number of elderly agents: ", sum(agent.type == 2 for agent in self.agents.values()))
         
         # Prevent 0-agent crash
         if len(self.agents) == 0:
@@ -71,6 +64,7 @@ class Scheduler():
         self.model.adult_agents.append((sum(agent.type == 1 for agent in self.agents.values())))
         self.model.young_agents.append((sum(agent.type == 0 for agent in self.agents.values())))
         self.model.elderly_agents.append((sum(agent.type == 2 for agent in self.agents.values())))
+        self.model.similar_neighbors.append(sum(agent.similar for agent in self.agents.values())/len(self.agents))
         
         # Remove agents that are too old from grid
         agents_removed = {pos: agent for pos, agent in self.agents.items() if agent.destroy is True}
@@ -108,15 +102,6 @@ class Scheduler():
         #Add the number of births to the model for this epoch 
         self.model.births_plot.append(counter)    
 
-        # Print summary of numbers of agents in the agent groups as well as number of new agents
-        #print("AFTER ALTERATIONS ")
-        #print("Number of happy agents: ", self.model.happy)
-        #print("Number of unhappy agents: ", len(self.agents) - self.model.happy)
-        #print("Number agents: ", len(self.agents))
-        #print("Number of student agents: ", sum(agent.type == 0 for agent in self.agents.values()))
-        #print("Number of adults agents: ", sum(agent.type == 1 for agent in self.agents.values()))
-        #print("Number of elderly agents: ", sum(agent.type == 2 for agent in self.agents.values()))
-        #print("Number of new agents: ", counter)
-
+     
         if not self.agents:
             self.model.running = False

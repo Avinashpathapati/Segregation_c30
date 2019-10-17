@@ -14,6 +14,7 @@ class Agent:
         self.building = building
         self.update = update
         self.old_pos = old_pos
+        self.similar = 0.0
 
     def step(self):
         similar = 0
@@ -26,6 +27,7 @@ class Agent:
                     similar += 1
             except AttributeError:
                 pass
+        self.similar = float(similar/8)
 
         # Check if one of the neighbors is a building with correct type
         within_radius = False
@@ -95,6 +97,7 @@ class Model:
         self.adult_agents = []
         self.young_agents = []
         self.elderly_agents = []
+        self.similar_neighbors = []
 
         # Set up buildings
         # FOR NOW: Just create 3 different buildings,

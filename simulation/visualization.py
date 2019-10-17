@@ -3,7 +3,12 @@ import tkinter as tk
 import numpy as np
 from tkinter import Button
 from model import Model
-import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.use("Qt5Agg")
+print(matplotlib.get_backend())
+
+from matplotlib import pyplot as plt
 
 # We want to implement another window to control the simulation replay
 class Controller():
@@ -65,6 +70,7 @@ class Controller():
         plot_information(model.adult_agents, 'Adult agents',  'Epochs', 'No Adult Agents', 0, max(model.adult_agents))
         plot_information(model.young_agents, 'Young agents',  'Epochs', 'No Young Agents', 0, max(model.young_agents))
         plot_information(model.elderly_agents, 'Elderly agents',  'Epochs', 'No Elderly Agents', 0, max(model.elderly_agents))
+        plot_information(model.similar_neighbors, 'Percentage of similar neighbors',  'Epochs', 'Percentage of similar neighbors', 0, max(model.similar_neighbors))
         print("[plots]\tNew plots were generated and stored in simulation/plots/")
     # Start the replay gui
     def start_replay(self, model, all_frames):
@@ -276,7 +282,7 @@ def plot_information(array, title, xlabel, ylabel, ymin, ymax):
     axes.set_ylabel(ylabel)
     plt.plot(array)
     #plt.show(block=False)
-    plt.savefig(plots_folder + title, format="svg")
+    plt.savefig(plots_folder + title+".png", format="png")
 
 # Construct ascii text of 2D grid to display in GUI
 def store_frame(model):
@@ -314,15 +320,15 @@ if __name__ == '__main__':
     if default == 'n':
         epochs = input("[init]\tEnter the amount of epochs (default = 100): ")
         dim = input("[init]\tEnter dimensions of the grid (default = 20): ")
-        density = input("[init]\tEnter percentage of density (default = 0.7): ")
+        density = input("[init]\tEnter percentage of density (default = 0.66): ")
         homophily = input("[init]\tEnter number of neighbors agent requires to be happy (default = 2): ")
         ageing = input("[init]\tEnter number of epochs it takes for agent to advance to next group (default = 3): ")
-        reproduction = input("[init]\tEnter percentage of reproducibility for adults (default = 0.5): ")
+        reproduction = input("[init]\tEnter percentage of reproducibility for adults (default = 0.33): ")
         radius = input("[init]\tEnter radius effect of buildings (default = 2): ")
     else:
         # Else default parameters
-        #                                                       DON'T PUSH THESE CHANGED!
-        epochs, dim, density, homophily, ageing, reproduction = 100, 20, 0.7, 2, 3, 0.5
+        #                                                         		DON'T PUSH THESE CHANGED!
+        epochs, dim, density, homophily, ageing, reproduction, radius = 100, 20, 0.66, 2, 3, 0.33, 2
 
     model_params = {
         "height": int(dim),
@@ -330,7 +336,8 @@ if __name__ == '__main__':
         "density": float(density),
         "homophily": int(homophily),
         "ageing": int(ageing),
-        "reproduction": float(reproduction)
+        "reproduction": float(reproduction),
+        "radius": int(radius)
     }
 
     # Initialize
