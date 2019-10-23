@@ -1,14 +1,16 @@
 import sys
 import tkinter as tk
 import numpy as np
-from tkinter import Button
+from tkinter import Button, Label
 from model import Model
 import matplotlib
-
-matplotlib.use("Qt5Agg")
-print(matplotlib.get_backend())
-
 from matplotlib import pyplot as plt
+from termcolor import colored, cprint
+
+# Matplotlib test (?)
+matplotlib.use("Qt5Agg")
+#print(matplotlib.get_backend())
+
 
 # We want to implement another window to control the simulation replay
 class Controller():
@@ -20,21 +22,24 @@ class Controller():
         # Define the window
         self.master = master
         master.title("Control Panel")
-        master.geometry("200x140")
+        master.geometry("220x180")
         master.resizable(0, 0)
+        # Define message
+        self.message = Label(master, text="Please keep your terminal open!\nAny feedback will be printed there.")
+        self.message.pack()
         ### Define buttons
         # Exit Program
         self.exit_button = Button(master, text="Exit Program", \
             command=self.exit_program, height = btn_height, width = btn_width)
         self.exit_button.pack()
-        # Print Info
-        self.info_button = Button(master, text="Print Info", \
-            command=self.print_info, height = btn_height, width = 15)
-        self.info_button.pack()
         # Make Plots
         self.plots_button = Button(master, text="Make Plots", \
             command=lambda: self.make_plots(model), height = btn_height, width = btn_width)
         self.plots_button.pack()
+        # Print Info
+        self.legend_button = Button(master, text="Print Legend", \
+            command=self.print_legend, height = btn_height, width = 15)
+        self.legend_button.pack()
         # Start Replay
         self.replay_button = Button(master, text="Start Replay", \
             command=lambda: self.start_replay(model, all_frames), height = btn_height, width = btn_width)
@@ -48,18 +53,6 @@ class Controller():
     def exit_program(self):
         print("[ctrl]\tShutting down\n")
         sys.exit()
-    # Print interesting information
-    def print_info(self):
-        print()
-        print("[info]\tThere are 3 different groups of agents:")
-        print("[info]\t\tstudents (green)\tadults (blue)\telderly (red)")
-        print("[info]\tIn the simulation, squares represent locations an agent can live")
-        print("[info]\tEach iteration the agents grow and if unhappy move to a random location")
-        print("[info]\tBlack tiles represent buildings, with black border being their area of effect")
-        print("[info]\tAgents living near a building (within black lines) are considered happy")
-        print("[info]\tAgents are also happy when their homophily requirement is met")
-        print("[info]\tThe reproduction variable is a chance for a single adult to spawn a new student")
-        print()
     # Make plots given model information
     def make_plots(self, model):
         plot_information(model.happy_plot, 'Percentage of happy agents',  'Epochs', '% Happy', 0,1)
@@ -72,6 +65,29 @@ class Controller():
         plot_information(model.elderly_agents, 'Elderly agents',  'Epochs', 'No Elderly Agents', 0, max(model.elderly_agents))
         plot_information(model.similar_neighbors, 'Percentage of similar neighbors',  'Epochs', 'Percentage of similar neighbors', 0, max(model.similar_neighbors))
         print("[plots]\tNew plots were generated and stored in simulation/plots/")
+    # Print information describing the legend of the simulation replay
+    def print_legend(self):
+        prefix = "[lgnd]\t"
+        student = colored("   ", 'green', 'on_green')
+        adult = colored("   ", 'blue', 'on_blue')
+        elderly = colored("   ", 'red', 'on_red')
+        student_happy = colored(" U ", 'white', 'on_green')
+        adult_happy = colored(" O ", 'white', 'on_blue')
+        elderly_happy = colored(" H ", 'white', 'on_red')
+        university = colored(" U ", 'white')
+        office = colored(" O ", 'white')
+        hospital = colored(" H ", 'white')
+        black_line = colored(" | ", 'white', attrs=['reverse'])
+        print(f"{prefix}{student} is a student")
+        print(f"{prefix}{student_happy} is a student who's happy because of a university")
+        print(f"{prefix}{adult} is an adult")
+        print(f"{prefix}{adult_happy} is an adult who's happy because of an office")
+        print(f"{prefix}{elderly} is an elderly")
+        print(f"{prefix}{elderly_happy} is an elderly who's happy because of a hospital")
+        print(f"{prefix}{university} is a university building")
+        print(f"{prefix}{office} is an office building")
+        print(f"{prefix}{hospital} is a hospital building")
+        print(f"{prefix}{black_line} black lines indicate the area of effect of buildings")
     # Start the replay gui
     def start_replay(self, model, all_frames):
         # Initialize replay windows
