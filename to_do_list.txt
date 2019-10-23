@@ -7,7 +7,7 @@ Joppe:
     Look how the radius is handled
     Peer review before oct20
 DJ:
-    Add a legend window
+    Add a legend window		DONE
     Improve our report
 Lex:
     Define a measure of segregation/clusters
