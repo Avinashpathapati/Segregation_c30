@@ -132,96 +132,105 @@ class Visualization():
         return True
 
     # This code needs commenting!
-    def check_facility_in_neighbourhood(self,cell_row,cell_col):
-        if self.is_valid_row_or_col(cell_row-1,cell_col):
-            c = self.model.grid[cell_row-1][cell_col]
-            if not c is None and c.building == 1:
-                return 1
-            if not c is None and c.building == 2:
-                return 2
-        if self.is_valid_row_or_col(cell_row-1,cell_col-1):
-            c = self.model.grid[cell_row-1][cell_col-1]
-            if not c is None and c.building == 1:
-                return 1
-            if not c is None and c.building == 2:
-                return 2
-        if self.is_valid_row_or_col(cell_row-1,cell_col+1):
-            c = self.model.grid[cell_row-1][cell_col+1]
-            if not c is None and c.building == 1:
-                return 1
-            if not c is None and c.building == 2:
-                return 2
-        if self.is_valid_row_or_col(cell_row,cell_col-1):
-            c = self.model.grid[cell_row][cell_col-1]
-            if not c is None and c.building == 1:
-                return 1
-            if not c is None and c.building == 2:
-                return 2
-        if self.is_valid_row_or_col(cell_row,cell_col+1):
-            c = self.model.grid[cell_row][cell_col+1]
-            if not c is None and c.building == 1:
-                return 1
-            if not c is None and c.building == 2:
-                return 2
-        if self.is_valid_row_or_col(cell_row+1,cell_col-1):
-            c = self.model.grid[cell_row+1][cell_col-1]
-            if not c is None and c.building == 1:
-                return 1
-            if not c is None and c.building == 2:
-                return 2
-        if self.is_valid_row_or_col(cell_row+1,cell_col+1):
-            c = self.model.grid[cell_row+1][cell_col+1]
-            if not c is None and c.building == 1:
-                return 1
-            if not c is None and c.building == 2:
-                return 2
-        if self.is_valid_row_or_col(cell_row+1,cell_col):
-            c = self.model.grid[cell_row+1][cell_col]
-            if not c is None and c.building == 1:
-                return 1
-            if not c is None and c.building == 2:
-                return 2
-        return -1
+    def check_facility_in_neighbourhood(self,cell_row,cell_col,radius):
+
+        
+        agent_type = self.model.grid[cell_row][cell_col]
+        building_list = []
+
+        for row_bound_iter in range(-radius, radius+1):
+            for col_bound_iter in range(-radius, radius+1):
+                if self.is_valid_row_or_col(cell_row+row_bound_iter,cell_col+col_bound_iter):
+                    c = self.model.grid[cell_row+row_bound_iter][cell_col+col_bound_iter]
+                    if not c is None and c.building:
+                        building_list.append(c.type)
+            
+        
+        return building_list
 
     def text_gui(self, each_text_grid_itr):
         #to print the initial state
         if each_text_grid_itr == 0:
+
+
             each_text_grid_print = self.text_print_arr[each_text_grid_itr]
             each_text_grid_row_split = each_text_grid_print.split('\n')
+            self.label_arr = [[0 for x in range(model.grid.width)] for y in range(model.grid.height)] 
+
             for each_row in range(len(each_text_grid_row_split)):
                 each_text = each_text_grid_row_split[each_row]
                 for each_col in range(len(each_text)):
                     # IF EMPTY
                     if each_text[each_col] == ' ':
-                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
-                            tk.Label(self.root,text=" ", relief=tk.SOLID, width=2, fg="black", borderwidth=2).grid(row=each_row,column=each_col)
+
+                        building_list = self.check_facility_in_neighbourhood(each_row,each_col,self.model.radius)
+                        if  not len(building_list)== 0:
+                            self.label_arr[each_row][each_col] = tk.Label(self.root,text=" ", relief=tk.SOLID, width=2, fg="black", borderwidth=2)
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
                         else:
-                            tk.Label(self.root,text=" ", relief=tk.RIDGE, width=2).grid(row=each_row,column=each_col)
+                           self.label_arr[each_row][each_col] =  tk.Label(self.root,text=" ", relief=tk.RIDGE, width=2)
+                           self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
+
+
                     # IF STUDENT
                     elif each_text[each_col] == 'S':
-                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
-                            tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="black", bg="green", borderwidth=2).grid(row=each_row,column=each_col)
+
+                        building_list = self.check_facility_in_neighbourhood(each_row,each_col,self.model.radius)
+
+                        if 0 in building_list:
+                            self.label_arr[each_row][each_col] = tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="white", bg="green", borderwidth=2)
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
+                        elif not len(building_list)== 0:
+                            self.label_arr[each_row][each_col] = tk.Label(self.root,text="", relief=tk.SOLID, width=2, fg="white",bg="green",borderwidth=2)
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
                         else:
-                            tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="green").grid(row=each_row,column=each_col)
+                            self.label_arr[each_row][each_col]  = tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="green")
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
+
+
+                    
                     # IF ADULT
                     elif each_text[each_col] == 'A':
-                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
-                            tk.Label(self.root,text="O", relief=tk.SOLID, width=2, fg="black", bg="blue", borderwidth=2).grid(row=each_row,column=each_col)
+
+                        building_list = self.check_facility_in_neighbourhood(each_row,each_col,self.model.radius)
+
+                        if 1 in building_list:
+                            self.label_arr[each_row][each_col]  = tk.Label(self.root,text="O", relief=tk.SOLID, width=2, fg="white", bg="blue", borderwidth=2)
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
+                        elif not len(building_list)== 0:
+                            self.label_arr[each_row][each_col]  = tk.Label(self.root,text="", relief=tk.SOLID, width=2, fg="white",bg="blue",borderwidth=2)
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
                         else:
-                            tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="blue").grid(row=each_row,column=each_col)
+                            self.label_arr[each_row][each_col]  = tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="blue")
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
+                        
                     # IF ELDERLY
                     elif each_text[each_col] == 'E':
-                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
-                            tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="black", bg="red", borderwidth=2).grid(row=each_row,column=each_col)
+
+                        building_list = self.check_facility_in_neighbourhood(each_row,each_col,self.model.radius)
+
+                        if 2 in building_list:
+                            self.label_arr[each_row][each_col]  = tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="red", borderwidth=2)
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
+                        elif not len(building_list)== 0:
+                            self.label_arr[each_row][each_col]  = tk.Label(self.root,text="", relief=tk.SOLID, width=2, fg="white",bg="red",borderwidth=2)
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
                         else:
-                            tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="red").grid(row=each_row,column=each_col)
+                            self.label_arr[each_row][each_col]  = tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="red")
+                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
+
+
+                    
                     # Draw building
                     elif each_text[each_col] == 'U':
-                        tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
+                        self.label_arr[each_row][each_col]  = tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange")
+                        self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
                     elif each_text[each_col] == 'O':
-                        tk.Label(self.root,text="O", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
+                        self.label_arr[each_row][each_col]  = tk.Label(self.root,text="O", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange")
+                        self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
                     elif each_text[each_col] == 'H':
-                        tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
+                        self.label_arr[each_row][each_col]  = tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange")
+                        self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
 
         #to print the rest of the states
         elif each_text_grid_itr < len(self.text_print_arr):
@@ -230,37 +239,156 @@ class Visualization():
             for each_row in range(len(each_text_grid_row_split)):
                 each_text = each_text_grid_row_split[each_row]
                 for each_col in range(len(each_text)):
-                    # IF EMPTY
+                   # IF EMPTY
                     if each_text[each_col] == ' ':
-                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
-                            tk.Label(self.root,text=" ", relief=tk.SOLID, width=2, fg="black", borderwidth=2).grid(row=each_row,column=each_col)
+
+                        building_list = self.check_facility_in_neighbourhood(each_row,each_col,self.model.radius)
+                        if  not len(building_list)== 0:
+                            self.label_arr[each_row][each_col]['text'] =  " "
+                            self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['fg'] =  "black"
+                            self.label_arr[each_row][each_col]['borderwidth'] = 2
+
+                            #tk.Label(self.root,text=" ", relief=tk.SOLID, width=2, fg="black", borderwidth=2).grid(row=each_row,column=each_col)
                         else:
-                            tk.Label(self.root,text=" ", relief=tk.RIDGE, width=2).grid(row=each_row,column=each_col)
+                            self.label_arr[each_row][each_col]['text'] =  " "
+                            self.label_arr[each_row][each_col]['relief'] = tk.RIDGE
+                            self.label_arr[each_row][each_col]['width'] =  2
+
+                            #tk.Label(self.root,text=" ", relief=tk.RIDGE, width=2).grid(row=each_row,column=each_col)
+
                     # IF STUDENT
                     elif each_text[each_col] == 'S':
-                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
-                            tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="black", bg="green", borderwidth=2).grid(row=each_row,column=each_col)
+
+                        building_list = self.check_facility_in_neighbourhood(each_row,each_col,self.model.radius)
+
+                        if 0 in building_list:
+                            self.label_arr[each_row][each_col]['text'] =  "U"
+                            self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['fg'] =  "white"
+                            self.label_arr[each_row][each_col]['bg'] =  "green"
+                            self.label_arr[each_row][each_col]['borderwidth'] = 2
+
+
+                            #tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="white", bg="green", borderwidth=2).grid(row=each_row,column=each_col)
+                        elif not len(building_list)== 0:
+                            self.label_arr[each_row][each_col]['text'] =  ""
+                            self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['fg'] =  "white"
+                            self.label_arr[each_row][each_col]['bg'] =  "green"
+                            self.label_arr[each_row][each_col]['borderwidth'] = 2
+
+
+                            #tk.Label(self.root,text="", relief=tk.SOLID, width=2, fg="white",bg="green",borderwidth=2).grid(row=each_row,column=each_col)
                         else:
-                            tk.Label(self.root,text="U", relief=tk.RIDGE, width=2, fg="green", bg="green").grid(row=each_row,column=each_col)
+                            self.label_arr[each_row][each_col]['text'] =  ""
+                            self.label_arr[each_row][each_col]['relief'] = tk.RIDGE
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['bg'] =  "green"
+
+                            #tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="green").grid(row=each_row,column=each_col)
+
+                    
                     # IF ADULT
                     elif each_text[each_col] == 'A':
-                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
-                            tk.Label(self.root,text="O", relief=tk.SOLID, width=2, fg="black", bg="blue", borderwidth=2).grid(row=each_row,column=each_col)
+
+                        building_list = self.check_facility_in_neighbourhood(each_row,each_col,self.model.radius)
+
+                        if 1 in building_list:
+                            self.label_arr[each_row][each_col]['text'] =  "O"
+                            self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['fg'] =  "white"
+                            self.label_arr[each_row][each_col]['bg'] =  "blue"
+                            self.label_arr[each_row][each_col]['borderwidth'] = 2
+
+                            #tk.Label(self.root,text="O", relief=tk.SOLID, width=2, fg="white", bg="blue", borderwidth=2).grid(row=each_row,column=each_col)
+                        elif not len(building_list)== 0:
+                            self.label_arr[each_row][each_col]['text'] =  ""
+                            self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['fg'] =  "white"
+                            self.label_arr[each_row][each_col]['bg'] =  "blue"
+                            self.label_arr[each_row][each_col]['borderwidth'] = 2
+
+                            #tk.Label(self.root,text="", relief=tk.SOLID, width=2, fg="white",bg="blue",borderwidth=2).grid(row=each_row,column=each_col)
                         else:
-                            tk.Label(self.root,text="O", relief=tk.RIDGE, width=2, fg="blue", bg="blue").grid(row=each_row,column=each_col)
+                            self.label_arr[each_row][each_col]['text'] =  ""
+                            self.label_arr[each_row][each_col]['relief'] = tk.RIDGE
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['bg'] =  "blue"
+
+                            #tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="blue").grid(row=each_row,column=each_col)
+                        
                     # IF ELDERLY
                     elif each_text[each_col] == 'E':
-                        if self.check_facility_in_neighbourhood(each_row,each_col) == 1 or self.check_facility_in_neighbourhood(each_row,each_col) == 2:
-                            tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="black", bg="red", borderwidth=2).grid(row=each_row,column=each_col)
+
+                        building_list = self.check_facility_in_neighbourhood(each_row,each_col,self.model.radius)
+
+                        if 2 in building_list:
+                            self.label_arr[each_row][each_col]['text'] =  "H"
+                            self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['fg'] =  "white"
+                            self.label_arr[each_row][each_col]['bg'] =  "red"
+                            self.label_arr[each_row][each_col]['borderwidth'] = 2
+                            
+
+
+                            #tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="red", borderwidth=2).grid(row=each_row,column=each_col)
+                        elif not len(building_list)== 0:
+                            self.label_arr[each_row][each_col]['text'] =  ""
+                            self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['fg'] =  "white"
+                            self.label_arr[each_row][each_col]['bg'] =  "red"
+                            self.label_arr[each_row][each_col]['borderwidth'] = 2
+
+                            #tk.Label(self.root,text="", relief=tk.SOLID, width=2, fg="white",bg="red",borderwidth=2).grid(row=each_row,column=each_col)
                         else:
-                            tk.Label(self.root,text="H", relief=tk.RIDGE, width=2, fg="red", bg="red").grid(row=each_row,column=each_col)
+                            self.label_arr[each_row][each_col]['text'] =  ""
+                            self.label_arr[each_row][each_col]['relief'] = tk.RIDGE
+                            self.label_arr[each_row][each_col]['width'] =  2
+                            self.label_arr[each_row][each_col]['bg'] =  "red"
+
+                            #tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="red").grid(row=each_row,column=each_col)
+
+
+                    
                     # Draw building
                     elif each_text[each_col] == 'U':
-                        tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
+                        self.label_arr[each_row][each_col]['text'] =  "U"
+                        self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                        self.label_arr[each_row][each_col]['width'] =  2
+                        self.label_arr[each_row][each_col]['fg'] =  "white"
+                        self.label_arr[each_row][each_col]['bg'] =  "black"
+                        self.label_arr[each_row][each_col]['borderwidth'] = 2
+                        self.label_arr[each_row][each_col]['highlightcolor'] = "orange"
+
+                        #tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
                     elif each_text[each_col] == 'O':
-                        tk.Label(self.root,text="O", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
+                        self.label_arr[each_row][each_col]['text'] =  "O"
+                        self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                        self.label_arr[each_row][each_col]['width'] =  2
+                        self.label_arr[each_row][each_col]['fg'] =  "white"
+                        self.label_arr[each_row][each_col]['bg'] =  "black"
+                        self.label_arr[each_row][each_col]['borderwidth'] = 2
+                        self.label_arr[each_row][each_col]['highlightcolor'] = "orange"
+
+                        #tk.Label(self.root,text="O", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
                     elif each_text[each_col] == 'H':
-                        tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
+                        self.label_arr[each_row][each_col]['text'] =  "H"
+                        self.label_arr[each_row][each_col]['relief'] = tk.SOLID
+                        self.label_arr[each_row][each_col]['width'] =  2
+                        self.label_arr[each_row][each_col]['fg'] =  "white"
+                        self.label_arr[each_row][each_col]['bg'] =  "black"
+                        self.label_arr[each_row][each_col]['borderwidth'] = 2
+                        self.label_arr[each_row][each_col]['highlightcolor'] = "orange"
+
+                        #tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
 
             each_text_grid_itr = each_text_grid_itr + 1
             self.root.after(1000, self.text_gui,each_text_grid_itr)
