@@ -2,13 +2,23 @@ Avinash:
     White letters in black tiles
         (U)niversity    (H)ospital  (O)ffice
     Only agents affected by an agent should get the same letter
-    Speed up the vizualisation
+    Make the dynamic radius do its thing
+    Peer review before oct20	DONE
 Joppe:
-    Look how the radius is handled
-    Peer review before oct20
+    Look how the radius is handled	DONE
+    Peer review before oct20	DONE
 DJ:
     Add a legend window		DONE
-    Improve our report
+    Improve our report with peer_review.pdf
 Lex:
-    Define a measure of segregation/clusters
-    Import our report
+    Define a measure of segregation/clusters	DONE
+    Import our report with beta_feedback.pdf
+
+Save results to a files 							DJ/JOPPE
+Write script that converts files into plots			DJ/JOPPE
+Decide which experiments to run 					LEX
+Run the experiments and generate plots				LEX
+Make a .gif from a simulation replay				JOPPE
+Read into more literature and add more references 	AVINASH
+Write the conclusion and discussion and abstract	TOGETHER
+Put results into report								TOGETHER

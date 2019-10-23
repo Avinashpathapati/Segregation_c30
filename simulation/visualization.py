@@ -275,7 +275,7 @@ class Visualization():
                             tk.Label(self.root,text="#", relief=tk.RIDGE, width=2, fg="blue", bg="blue").grid(row=each_row,column=each_col)
 
             each_text_grid_itr = each_text_grid_itr + 1
-            self.root.after(750, self.text_gui,each_text_grid_itr)
+            self.root.after(1000, self.text_gui,each_text_grid_itr)
 
         elif each_text_grid_itr == len(self.text_print_arr):
             #below commented code is to automatically close the GUI at the end. Right now not required
