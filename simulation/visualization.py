@@ -1,9 +1,10 @@
 import sys
+import matplotlib
 import tkinter as tk
 import numpy as np
+import pandas as pd
 from tkinter import Button, Label
 from model import Model
-import matplotlib
 from matplotlib import pyplot as plt
 from termcolor import colored, cprint
 
@@ -135,7 +136,7 @@ class Visualization():
     # This code needs commenting!
     def check_facility_in_neighbourhood(self,cell_row,cell_col,radius):
 
-        
+
         agent_type = self.model.grid[cell_row][cell_col]
         building_list = []
 
@@ -145,8 +146,8 @@ class Visualization():
                     c = self.model.grid[cell_row+row_bound_iter][cell_col+col_bound_iter]
                     if not c is None and c.building:
                         building_list.append(c.type)
-            
-        
+
+
         return building_list
 
     def text_gui(self, each_text_grid_itr):
@@ -156,7 +157,7 @@ class Visualization():
 
             each_text_grid_print = self.text_print_arr[each_text_grid_itr]
             each_text_grid_row_split = each_text_grid_print.split('\n')
-            self.label_arr = [[0 for x in range(model.grid.width)] for y in range(model.grid.height)] 
+            self.label_arr = [[0 for x in range(model.grid.width)] for y in range(model.grid.height)]
 
             for each_row in range(len(each_text_grid_row_split)):
                 each_text = each_text_grid_row_split[each_row]
@@ -189,7 +190,7 @@ class Visualization():
                             self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
 
 
-                    
+
                     # IF ADULT
                     elif each_text[each_col] == 'A':
 
@@ -204,7 +205,7 @@ class Visualization():
                         else:
                             self.label_arr[each_row][each_col]  = tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="blue")
                             self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
-                        
+
                     # IF ELDERLY
                     elif each_text[each_col] == 'E':
 
@@ -221,7 +222,7 @@ class Visualization():
                             self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
 
 
-                    
+
                     # Draw building
                     elif each_text[each_col] == 'U':
                         self.label_arr[each_row][each_col]  = tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange")
@@ -292,7 +293,7 @@ class Visualization():
 
                             #tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="green").grid(row=each_row,column=each_col)
 
-                    
+
                     # IF ADULT
                     elif each_text[each_col] == 'A':
 
@@ -323,7 +324,7 @@ class Visualization():
                             self.label_arr[each_row][each_col]['bg'] =  "blue"
 
                             #tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="blue").grid(row=each_row,column=each_col)
-                        
+
                     # IF ELDERLY
                     elif each_text[each_col] == 'E':
 
@@ -336,7 +337,7 @@ class Visualization():
                             self.label_arr[each_row][each_col]['fg'] =  "white"
                             self.label_arr[each_row][each_col]['bg'] =  "red"
                             self.label_arr[each_row][each_col]['borderwidth'] = 2
-                            
+
 
 
                             #tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="red", borderwidth=2).grid(row=each_row,column=each_col)
@@ -358,7 +359,7 @@ class Visualization():
                             #tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="red").grid(row=each_row,column=each_col)
 
 
-                    
+
                     # Draw building
                     elif each_text[each_col] == 'U':
                         self.label_arr[each_row][each_col]['text'] =  "U"
@@ -414,7 +415,7 @@ def plot_information(array, title, xlabel, ylabel, ymin, ymax):
     axes.set_xlabel(xlabel)
     axes.set_ylabel(ylabel)
     plt.plot(array)
-    #plt.show(block=False)
+    # plt.show(block=False)
     plt.savefig(plots_folder + title+".png", format="png")
 
 # Construct ascii text of 2D grid to display in GUI
@@ -443,6 +444,20 @@ def store_frame(model):
                     text += '+'
         text += '\n'
     return text
+
+# Save all the plotting information to csv
+def save_plotting_information_to_csv(filename, model):
+    df = pd.DataFrame()
+    df['happy'] = model.happy_plot
+    df['moves'] = model.moves_plot
+    df['deaths'] = model.deaths_plot
+    df['births'] = model.births_plot
+    df['total_agents'] = model.total_agents
+    df['adults_agents'] = model.adult_agents
+    df['young_agents'] = model.young_agents
+    df['elderly_agents'] = model.elderly_agents
+    df['similar_neighbors'] = model.similar_neighbors
+    df.to_csv(filename + '.csv')
 
 
 # Initialize input parameters of model
@@ -493,6 +508,11 @@ if __name__ == '__main__':
             print(f"[model]\tSimulating epoch {i+1}/{epochs}", end='\r')
             all_frames.append(store_frame(model))
     print("\n[model]\tSimulations complete!")
+
+    filename = [key + str(value) for key, value in model_params.items()]
+    filename = '_'.join(filename)
+    print(filename)
+    save_plotting_information_to_csv(filename=filename, model=model)
 
     # Open controller window
     print("\n[ctrl]\tLaunching control panel")
