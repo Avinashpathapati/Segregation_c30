@@ -14,7 +14,7 @@ matplotlib.use("Qt5Agg")
 
 # We want to implement another window to control the simulation replay
 class Controller():
-    def __init__(self, master, model, all_frames):
+    def __init__(self, master, model, all_frames, playback_speed):
         # Preset parameters
         btn_height, btn_width = (1, 15)
         # Initialize model
@@ -42,7 +42,7 @@ class Controller():
         self.legend_button.pack()
         # Start Replay
         self.replay_button = Button(master, text="Start Replay", \
-            command=lambda: self.start_replay(model, all_frames), height = btn_height, width = btn_width)
+            command=lambda: self.start_replay(model, all_frames, playback_speed), height = btn_height, width = btn_width)
         self.replay_button.pack()
         # Stop Replay
         self.stop_button = Button(master, text="Stop Replay", \
@@ -89,9 +89,9 @@ class Controller():
         print(f"{prefix}{hospital} is a hospital building")
         print(f"{prefix}{black_line} black lines indicate the area of effect of buildings")
     # Start the replay gui
-    def start_replay(self, model, all_frames):
+    def start_replay(self, model, all_frames, playback_speed):
         # Initialize replay windows
-        viz = Visualization(model, all_frames)
+        viz = Visualization(model, all_frames, playback_speed)
         # To print the initial state in GUI
         viz.print_text_grid()
         # Tkinter event loop to make the window visible
@@ -104,7 +104,7 @@ class Controller():
 
 
 class Visualization():
-    def __init__(self, model, all_frames):
+    def __init__(self, model, all_frames, playback_speed):
         # Initialize model
         self.model = model
         # self.root.after(20,self.render)
@@ -113,6 +113,7 @@ class Visualization():
         self.root.resizable(0, 0)
         #contains all the grid states to print in GUI
         self.text_print_arr = all_frames
+        self.playback_speed = playback_speed
 
     #Method to print the Grid states in GUI
     def print_text_grid(self):
@@ -391,7 +392,7 @@ class Visualization():
                         #tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
 
             each_text_grid_itr = each_text_grid_itr + 1
-            self.root.after(1000, self.text_gui,each_text_grid_itr)
+            self.root.after(self.playback_speed, self.text_gui,each_text_grid_itr)
 
         elif each_text_grid_itr == len(self.text_print_arr):
             #below commented code is to automatically close the GUI at the end. Right now not required
@@ -453,7 +454,8 @@ if __name__ == '__main__':
     print("[init]\t\thomophily:\t2")
     print("[init]\t\tageing:\t\t3")
     print("[init]\t\treproduction:\t0.5")
-    print("[init]\t\tradius:\t2")
+    print("[init]\t\tradius:\t\t2")
+    print("[init]\t\tplayback speed:\t100")
     default = input("[init]\tDo you want default parameters? [y/n]: ")
     if default == 'n':
         epochs = input("[init]\tEnter the amount of epochs (default = 100): ")
@@ -463,10 +465,11 @@ if __name__ == '__main__':
         ageing = input("[init]\tEnter number of epochs it takes for agent to advance to next group (default = 3): ")
         reproduction = input("[init]\tEnter percentage of reproducibility for adults (default = 0.33): ")
         radius = input("[init]\tEnter radius effect of buildings (default = 2): ")
+        playback_speed = input("[init]\tEnter the playback speed for the simulation in ms (default = 100): ")
     else:
         # Else default parameters
         #                                                         		DON'T PUSH THESE CHANGED!
-        epochs, dim, density, homophily, ageing, reproduction, radius = 100, 20, 0.66, 2, 3, 0.33, 2
+        epochs, dim, density, homophily, ageing, reproduction, radius, playback_speed = 100, 20, 0.66, 2, 3, 0.33, 2, 100
 
     model_params = {
         "height": int(dim),
@@ -494,5 +497,5 @@ if __name__ == '__main__':
     # Open controller window
     print("\n[ctrl]\tLaunching control panel")
     controlmaster = tk.Tk()
-    controlwindow = Controller(controlmaster, model, all_frames)
+    controlwindow = Controller(controlmaster, model, all_frames, playback_speed)
     controlmaster.mainloop()
