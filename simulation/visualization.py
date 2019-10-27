@@ -447,29 +447,29 @@ def store_frame(model):
 
 # Initialize input parameters of model
 if __name__ == '__main__':
-    print("[init]\tDefault parameters:")
-    print("[init]\t\tepochs:\t\t100")
-    print("[init]\t\theight/width:\t10")
-    print("[init]\t\tdensity:\t0.8")
-    print("[init]\t\thomophily:\t2")
-    print("[init]\t\tageing:\t\t3")
-    print("[init]\t\treproduction:\t0.5")
-    print("[init]\t\tradius:\t\t2")
-    print("[init]\t\tplayback speed:\t100")
-    default = input("[init]\tDo you want default parameters? [y/n]: ")
+    # Set default parameters here!
+    epochs, dim, density, homophily, ageing, reproduction, radius, playback_speed = \
+    100,    20,  0.66,    2,         3,      0.33,         2,      100
+    prefix = "[init]\t"
+    print(f"{prefix}Default parameters:")
+    print(f"{prefix}\tepochs:\t\t{epochs}")
+    print(f"{prefix}\theight/width:\t{dim}")
+    print(f"{prefix}\tdensity:\t{density}")
+    print(f"{prefix}\thomophily:\t{homophily}")
+    print(f"{prefix}\tageing:\t\t{ageing}")
+    print(f"{prefix}\treproduction:\t{reproduction}")
+    print(f"{prefix}\tradius:\t\t{radius}")
+    print(f"{prefix}\tplayback speed:\t{playback_speed}")
+    default = input(f"{prefix}Do you want default parameters? [y/n]: ")
     if default == 'n':
-        epochs = input("[init]\tEnter the amount of epochs (default = 100): ")
-        dim = input("[init]\tEnter dimensions of the grid (default = 20): ")
-        density = input("[init]\tEnter percentage of density (default = 0.66): ")
-        homophily = input("[init]\tEnter number of neighbors agent requires to be happy (default = 2): ")
-        ageing = input("[init]\tEnter number of epochs it takes for agent to advance to next group (default = 3): ")
-        reproduction = input("[init]\tEnter percentage of reproducibility for adults (default = 0.33): ")
-        radius = input("[init]\tEnter radius effect of buildings (default = 2): ")
-        playback_speed = input("[init]\tEnter the playback speed for the simulation in ms (default = 100): ")
-    else:
-        # Else default parameters
-        #                                                         		DON'T PUSH THESE CHANGED!
-        epochs, dim, density, homophily, ageing, reproduction, radius, playback_speed = 100, 20, 0.66, 2, 3, 0.33, 2, 100
+        epochs = input(f"{prefix}Enter the amount of epochs (default = {epochs}): ")
+        dim = input(f"{prefix}Enter dimensions of the grid (default = {dim}): ")
+        density = input(f"{prefix}Enter percentage of density (default = {density}): ")
+        homophily = input(f"{prefix}Enter number of neighbors agent requires to be happy (default = {homophily}): ")
+        ageing = input(f"{prefix}Enter number of epochs it takes for agent to advance to next group (default = {ageing}): ")
+        reproduction = input(f"{prefix}Enter percentage of reproducibility for adults (default = {reproduction}): ")
+        radius = input(f"{prefix}Enter radius effect of buildings (default = {radius}): ")
+        playback_speed = input(f"{prefix}Enter the playback speed for the simulation in ms (default = {playback_speed}): ")
 
     model_params = {
         "height": int(dim),
