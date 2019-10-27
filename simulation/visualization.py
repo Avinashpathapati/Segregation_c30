@@ -457,7 +457,7 @@ def save_plotting_information_to_csv(filename, model):
     df['young_agents'] = model.young_agents
     df['elderly_agents'] = model.elderly_agents
     df['similar_neighbors'] = model.similar_neighbors
-    df.to_csv(filename + '.csv')
+    df.to_csv(filename + '.csv', index=False)
 
 
 # Initialize input parameters of model
@@ -509,9 +509,9 @@ if __name__ == '__main__':
             all_frames.append(store_frame(model))
     print("\n[model]\tSimulations complete!")
 
+    # Save plotting information to .csv
     filename = [key + str(value) for key, value in model_params.items()]
     filename = '_'.join(filename)
-    print(filename)
     save_plotting_information_to_csv(filename=filename, model=model)
 
     # Open controller window
