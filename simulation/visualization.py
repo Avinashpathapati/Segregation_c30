@@ -167,10 +167,10 @@ class Visualization():
 
                         building_list = self.check_facility_in_neighbourhood(each_row,each_col,self.model.radius)
                         if  not len(building_list)== 0:
-                            self.label_arr[each_row][each_col] = tk.Label(self.root,text=" ", relief=tk.SOLID, width=2, fg="black", borderwidth=2)
+                            self.label_arr[each_row][each_col] = tk.Label(self.root,text=" ", relief=tk.SOLID, width=2, fg="black", bg="white", borderwidth=2)
                             self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
                         else:
-                           self.label_arr[each_row][each_col] =  tk.Label(self.root,text=" ", relief=tk.RIDGE, width=2)
+                           self.label_arr[each_row][each_col] =  tk.Label(self.root,text=" ", relief=tk.RIDGE, bg="white",width=2)
                            self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
 
 
