@@ -25,6 +25,7 @@ class Grid():
     # Place agent on the grid, remove from the empty_spots set
     def place_agent(self, pos, agent):
         x, y = pos
+        agent.pos = pos
         self.grid[x][y] = agent
         self.empty_spots.discard(pos)
 
@@ -32,26 +33,6 @@ class Grid():
     def place_agent_on_empty(self, agent):
         pos = random.choice(sorted(self.empty_spots))
         self.place_agent(pos, agent)
-        agent.pos = pos
-        self.remove_agent_by_pos(pos, agent)
-    
-    # Place agent on empty spot and return position
-    def place_agent_on_empty2(self, agent):
-        try:
-            pos = random.choice(sorted(self.empty_spots))
-        except:
-            print("No more empty spaces available, simulation is stopped.")
-            sys.exit()
-        self.place_agent(pos, agent)
-        agent.pos = pos
-        self.empty_spots.discard(pos)
-        return pos
-
-    # Remove agent from grid, and add the coordinates to empty_spots set
-    def remove_agent_by_pos(self, pos, agent):
-        x, y = pos
-        self.grid[x][y] = None
-        self.empty_spots.add(pos)
 
     # Remove agent by the Agent object itself and add to empty_spots
     def remove_agent(self, agent):
@@ -62,21 +43,26 @@ class Grid():
     # Move agent to randomly one of the coordinates in empty_spots
     # NOTE: There has to be an empty spot or else the program fails
     def move_to_empty(self, agent):
-        pos = agent.pos
-        try:
-            new_pos = random.choice(sorted(self.empty_spots))
-        except:
-            print("No more empty spaces available, simulation is stopped.")
-            sys.exit()
-        self.place_agent(new_pos, agent)
+        old_pos = agent.pos
+        new_pos = random.choice(sorted(self.empty_spots))
+        old_x, old_y = old_pos
+        new_x, new_y = new_pos
+        # Move it
         agent.pos = new_pos
-        self.remove_agent_by_pos(pos, agent)
+        self.grid[old_x][old_y] = None
+        self.grid[new_x][new_y] = agent
+        self.empty_spots.discard(new_pos)
+        self.empty_spots.add(old_pos)
 
     # Returns number of active agents on the grid
-    def num_agents(self):
+    def get_num_agents(self):
         num_none = sum([row.count(None) for row in self.grid])
         return (self.height * self.width) - num_none
 
+    # Returns number of free spots
+    def get_empty_spots(self):
+        return len(self.empty_spots)
+        
     # Iterate over the neighbors of specific agent, return their coordinates
     def get_neighbors(self, pos, rad):
         x, y = pos
@@ -89,5 +75,4 @@ class Grid():
                     continue
                 else:
                     coordinates.append(self.grid[neighbors_x + x][neighbors_y + y])
-
         return coordinates

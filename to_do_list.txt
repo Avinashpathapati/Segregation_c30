@@ -1,17 +1,45 @@
 Avinash:
-    Square cells in the grid
-    Colors for agents
+    White letters in black tiles
+        (U)niversity    (H)ospital  (O)ffice        DONE
+    Only agents affected by an agent should get the same letters    DONE
+    Make the dynamic radius do its thing        DONE
+    Peer review before oct20	DONE
 Joppe:
-    Create a class for buildings and let them affect the agents YES
-    Add radius YES
-    If agent is within radius he don't care about his neighbors YES
-    Make the age of agents vary within their agent group type YES
+    Look how the radius is handled	DONE
+    Peer review before oct20	DONE
 DJ:
-    Add sliders to GUI
-    Start/Stop and Reset buttons for simulation
-LEX:
-    Think of experiments (look for the parameters we can change in the simulation)
-    Look at report yes
-LATER:
-Joppe:
-    Make plots for happiness per group
+    Add a legend window		DONE
+    Improve our report with peer_review.pdf     DONE
+    Added playback speed control    DONE
+Lex:
+    Define a measure of segregation/clusters	DONE
+    Import our report with beta_feedback.pdf    DONE (?)
+
+Save results to a files 							DJ/JOPPE
+Write script that converts files into plots			DJ/JOPPE
+Decide which experiments to run 					LEX
+Run the experiments and generate plots				LEX
+Make a .gif from a simulation replay				JOPPE: SKIP THIS BECAUSE SIM IS FAST NOW
+Read into more literature and add more references 	AVINASH
+Write the conclusion and discussion and abstract	TOGETHER
+Put results into report								TOGETHER
+
+
+
+
+
+
+
+
+Wil je de plotting information in 1 csv ? Dus bijvoorbeeld
+Exp, birth rate, etc, etc
+Experiment 1, [0.5, 0.1], [0.4, 0.8], etc ,etc
+Experiment 2, [0.5, 0.6], [0.4, 0.4], etc ,etc
+
+Of 1 csv per experiment?
+
+Ik snap de vraag niet
+
+
+	Happy moves deaths
+1	50	50 	50

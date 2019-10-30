@@ -14,6 +14,7 @@ class Agent:
         self.building = building
         self.update = update
         self.old_pos = old_pos
+        self.similar = 0.0
 
     def step(self):
         similar = 0
@@ -26,22 +27,23 @@ class Agent:
                     similar += 1
             except AttributeError:
                 pass
+        self.similar = float(similar/8)
 
         # Check if one of the neighbors is a building with correct type
         within_radius = False
-        for neighbor in self.model.grid.get_neighbors(self.pos, rad=2):
+        for neighbor in self.model.grid.get_neighbors(self.pos, rad=self.model.radius):
             try:
                 if neighbor.type == self.type and neighbor.building:
                     within_radius = True
             except AttributeError:
                 pass
-                
+
         # If the agent is too old it is removed from the simulation
         if self.type == 2 and self.age == self.model.ageing * 3:
             self.destroy = True
             self.model.deaths +=1
             #return
-            
+
         # If agent is unhappy move it, else it stays
         if (similar < self.model.homophily and within_radius is False):
             self.old_pos = self.pos
@@ -68,7 +70,7 @@ class Building:
         self.building = building
 
 class Model:
-    def __init__(self, height=10, width=10, density=0.8, homophily=2, ageing=3, reproduction=0.5):
+    def __init__(self, height=10, width=10, density=0.8, homophily=2, ageing=3, reproduction=0.5, radius=2):
         # Initial parameters
         self.height = height
         self.width = width
@@ -76,11 +78,12 @@ class Model:
         self.homophily = homophily
         self.ageing = ageing
         self.reproduction = reproduction
+        self.radius = radius
 
         # Define a grid and scheduler
         self.grid = grid.Grid(height, width)
         self.scheduler = scheduler.Scheduler(self)
-        
+
         #Define values for data collection
         self.happy = 0
         self.moves = 0
@@ -94,6 +97,7 @@ class Model:
         self.adult_agents = []
         self.young_agents = []
         self.elderly_agents = []
+        self.similar_neighbors = []
 
         # Set up buildings
         # FOR NOW: Just create 3 different buildings,
