@@ -1,9 +1,10 @@
 import sys
+import matplotlib
 import tkinter as tk
 import numpy as np
+import pandas as pd
 from tkinter import Button, Label
 from model import Model
-import matplotlib
 from matplotlib import pyplot as plt
 from termcolor import colored, cprint
 
@@ -14,7 +15,7 @@ matplotlib.use("Qt5Agg")
 
 # We want to implement another window to control the simulation replay
 class Controller():
-    def __init__(self, master, model, all_frames):
+    def __init__(self, master, model, all_frames, playback_speed):
         # Preset parameters
         btn_height, btn_width = (1, 15)
         # Initialize model
@@ -42,7 +43,7 @@ class Controller():
         self.legend_button.pack()
         # Start Replay
         self.replay_button = Button(master, text="Start Replay", \
-            command=lambda: self.start_replay(model, all_frames), height = btn_height, width = btn_width)
+            command=lambda: self.start_replay(model, all_frames, playback_speed), height = btn_height, width = btn_width)
         self.replay_button.pack()
         # Stop Replay
         self.stop_button = Button(master, text="Stop Replay", \
@@ -89,9 +90,9 @@ class Controller():
         print(f"{prefix}{hospital} is a hospital building")
         print(f"{prefix}{black_line} black lines indicate the area of effect of buildings")
     # Start the replay gui
-    def start_replay(self, model, all_frames):
+    def start_replay(self, model, all_frames, playback_speed):
         # Initialize replay windows
-        viz = Visualization(model, all_frames)
+        viz = Visualization(model, all_frames, playback_speed)
         # To print the initial state in GUI
         viz.print_text_grid()
         # Tkinter event loop to make the window visible
@@ -104,7 +105,7 @@ class Controller():
 
 
 class Visualization():
-    def __init__(self, model, all_frames):
+    def __init__(self, model, all_frames, playback_speed):
         # Initialize model
         self.model = model
         # self.root.after(20,self.render)
@@ -113,6 +114,7 @@ class Visualization():
         self.root.resizable(0, 0)
         #contains all the grid states to print in GUI
         self.text_print_arr = all_frames
+        self.playback_speed = playback_speed
 
     #Method to print the Grid states in GUI
     def print_text_grid(self):
@@ -134,7 +136,7 @@ class Visualization():
     # This code needs commenting!
     def check_facility_in_neighbourhood(self,cell_row,cell_col,radius):
 
-        
+
         agent_type = self.model.grid[cell_row][cell_col]
         building_list = []
 
@@ -144,8 +146,8 @@ class Visualization():
                     c = self.model.grid[cell_row+row_bound_iter][cell_col+col_bound_iter]
                     if not c is None and c.building:
                         building_list.append(c.type)
-            
-        
+
+
         return building_list
 
     def text_gui(self, each_text_grid_itr):
@@ -155,7 +157,7 @@ class Visualization():
 
             each_text_grid_print = self.text_print_arr[each_text_grid_itr]
             each_text_grid_row_split = each_text_grid_print.split('\n')
-            self.label_arr = [[0 for x in range(model.grid.width)] for y in range(model.grid.height)] 
+            self.label_arr = [[0 for x in range(model.grid.width)] for y in range(model.grid.height)]
 
             for each_row in range(len(each_text_grid_row_split)):
                 each_text = each_text_grid_row_split[each_row]
@@ -188,7 +190,7 @@ class Visualization():
                             self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
 
 
-                    
+
                     # IF ADULT
                     elif each_text[each_col] == 'A':
 
@@ -203,7 +205,7 @@ class Visualization():
                         else:
                             self.label_arr[each_row][each_col]  = tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="blue")
                             self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
-                        
+
                     # IF ELDERLY
                     elif each_text[each_col] == 'E':
 
@@ -220,7 +222,7 @@ class Visualization():
                             self.label_arr[each_row][each_col].grid(row=each_row,column=each_col)
 
 
-                    
+
                     # Draw building
                     elif each_text[each_col] == 'U':
                         self.label_arr[each_row][each_col]  = tk.Label(self.root,text="U", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange")
@@ -293,7 +295,7 @@ class Visualization():
 
                             #tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="green").grid(row=each_row,column=each_col)
 
-                    
+
                     # IF ADULT
                     elif each_text[each_col] == 'A':
 
@@ -324,7 +326,7 @@ class Visualization():
                             self.label_arr[each_row][each_col]['bg'] =  "blue"
 
                             #tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="blue").grid(row=each_row,column=each_col)
-                        
+
                     # IF ELDERLY
                     elif each_text[each_col] == 'E':
 
@@ -337,7 +339,7 @@ class Visualization():
                             self.label_arr[each_row][each_col]['fg'] =  "white"
                             self.label_arr[each_row][each_col]['bg'] =  "red"
                             self.label_arr[each_row][each_col]['borderwidth'] = 2
-                            
+
 
 
                             #tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="red", borderwidth=2).grid(row=each_row,column=each_col)
@@ -359,7 +361,7 @@ class Visualization():
                             #tk.Label(self.root,text="", relief=tk.RIDGE, width=2, bg="red").grid(row=each_row,column=each_col)
 
 
-                    
+
                     # Draw building
                     elif each_text[each_col] == 'U':
                         self.label_arr[each_row][each_col]['text'] =  "U"
@@ -393,7 +395,7 @@ class Visualization():
                         #tk.Label(self.root,text="H", relief=tk.SOLID, width=2, fg="white", bg="black", borderwidth=2, highlightcolor="orange").grid(row=each_row,column=each_col)
 
             each_text_grid_itr = each_text_grid_itr + 1
-            self.root.after(1000, self.text_gui,each_text_grid_itr)
+            self.root.after(self.playback_speed, self.text_gui,each_text_grid_itr)
 
         elif each_text_grid_itr == len(self.text_print_arr):
             #below commented code is to automatically close the GUI at the end. Right now not required
@@ -415,7 +417,7 @@ def plot_information(array, title, xlabel, ylabel, ymin, ymax):
     axes.set_xlabel(xlabel)
     axes.set_ylabel(ylabel)
     plt.plot(array)
-    #plt.show(block=False)
+    # plt.show(block=False)
     plt.savefig(plots_folder + title+".png", format="png")
 
 # Construct ascii text of 2D grid to display in GUI
@@ -445,30 +447,46 @@ def store_frame(model):
         text += '\n'
     return text
 
+# Save all the plotting information to csv
+def save_plotting_information_to_csv(filename, model):
+    df = pd.DataFrame()
+    df['happy'] = model.happy_plot
+    df['moves'] = model.moves_plot
+    df['deaths'] = model.deaths_plot
+    df['births'] = model.births_plot
+    df['total_agents'] = model.total_agents
+    df['adults_agents'] = model.adult_agents
+    df['young_agents'] = model.young_agents
+    df['elderly_agents'] = model.elderly_agents
+    df['similar_neighbors'] = model.similar_neighbors
+    df.to_csv(filename + '.csv', index=False)
+
 
 # Initialize input parameters of model
 if __name__ == '__main__':
-    print("[init]\tDefault parameters:")
-    print("[init]\t\tepochs:\t\t100")
-    print("[init]\t\theight/width:\t10")
-    print("[init]\t\tdensity:\t0.8")
-    print("[init]\t\thomophily:\t2")
-    print("[init]\t\tageing:\t\t3")
-    print("[init]\t\treproduction:\t0.5")
-    print("[init]\t\tradius:\t2")
-    default = input("[init]\tDo you want default parameters? [y/n]: ")
+    # Set default parameters here!
+    epochs, dim, density, homophily, ageing, reproduction, radius, playback_speed = \
+    100,    20,  0.66,    2,         3,      0.33,         2,      100
+    prefix = "[init]\t"
+    print(f"{prefix}Default parameters:")
+    print(f"{prefix}\tepochs:\t\t{epochs}")
+    print(f"{prefix}\theight/width:\t{dim}")
+    print(f"{prefix}\tdensity:\t{density}")
+    print(f"{prefix}\thomophily:\t{homophily}")
+    print(f"{prefix}\tageing:\t\t{ageing}")
+    print(f"{prefix}\treproduction:\t{reproduction}")
+    print(f"{prefix}\tradius:\t\t{radius}")
+    print(f"{prefix}\tplayback speed:\t{playback_speed}")
+    default = input(f"{prefix}Do you want default parameters? [y/n]: ")
     if default == 'n':
-        epochs = input("[init]\tEnter the amount of epochs (default = 100): ")
-        dim = input("[init]\tEnter dimensions of the grid (default = 20): ")
-        density = input("[init]\tEnter percentage of density (default = 0.66): ")
-        homophily = input("[init]\tEnter number of neighbors agent requires to be happy (default = 2): ")
-        ageing = input("[init]\tEnter number of epochs it takes for agent to advance to next group (default = 3): ")
-        reproduction = input("[init]\tEnter percentage of reproducibility for adults (default = 0.33): ")
-        radius = input("[init]\tEnter radius effect of buildings (default = 2): ")
-    else:
-        # Else default parameters
-        #                                                         		DON'T PUSH THESE CHANGED!
-        epochs, dim, density, homophily, ageing, reproduction, radius = 100, 20, 0.66, 2, 3, 0.33, 2
+        epochs = input(f"{prefix}Enter the amount of epochs (default = {epochs}): ")
+        dim = input(f"{prefix}Enter dimensions of the grid (default = {dim}): ")
+        density = input(f"{prefix}Enter percentage of density (default = {density}): ")
+        homophily = input(f"{prefix}Enter number of neighbors agent requires to be happy (default = {homophily}): ")
+        ageing = input(f"{prefix}Enter number of epochs it takes for agent to advance to next group (default = {ageing}): ")
+        reproduction = input(f"{prefix}Enter percentage of reproducibility for adults (default = {reproduction}): ")
+        radius = input(f"{prefix}Enter radius effect of buildings (default = {radius}): ")
+        playback_speed = input(f"{prefix}Enter the playback speed for the simulation in ms (default = {playback_speed}): ")
 
     model_params = {
         "height": int(dim),
@@ -493,8 +511,13 @@ if __name__ == '__main__':
             all_frames.append(store_frame(model))
     print("\n[model]\tSimulations complete!")
 
+    # Save plotting information to .csv
+    filename = [key + str(value) for key, value in model_params.items()]
+    filename = '_'.join(filename)
+    save_plotting_information_to_csv(filename=filename, model=model)
+
     # Open controller window
     print("\n[ctrl]\tLaunching control panel")
     controlmaster = tk.Tk()
-    controlwindow = Controller(controlmaster, model, all_frames)
+    controlwindow = Controller(controlmaster, model, all_frames, playback_speed)
     controlmaster.mainloop()
