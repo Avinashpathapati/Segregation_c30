@@ -460,7 +460,7 @@ if __name__ == '__main__':
     print(f"{prefix}\treproduction:\t{reproduction}")
     print(f"{prefix}\tradius:\t\t{radius}")
     print(f"{prefix}\tplayback speed:\t{playback_speed}")
-    default = input(f"{prefix}Do you want default parameters? [y/n]: ")
+    default = input(f"{prefix}Do you want use the default parameters? ([y]/n): ")
     if default == 'n':
         epochs = input(f"{prefix}Enter the amount of epochs (default = {epochs}): ")
         dim = input(f"{prefix}Enter dimensions of the grid (default = {dim}): ")
