@@ -249,13 +249,14 @@ class Visualization():
                             self.label_arr[each_row][each_col]['text'] =  " "
                             self.label_arr[each_row][each_col]['relief'] = tk.SOLID
                             self.label_arr[each_row][each_col]['width'] =  2
-                            self.label_arr[each_row][each_col]['fg'] =  "black"
+                            self.label_arr[each_row][each_col]['bg'] =  "white"
                             self.label_arr[each_row][each_col]['borderwidth'] = 2
 
                             #tk.Label(self.root,text=" ", relief=tk.SOLID, width=2, fg="black", borderwidth=2).grid(row=each_row,column=each_col)
                         else:
                             self.label_arr[each_row][each_col]['text'] =  " "
                             self.label_arr[each_row][each_col]['relief'] = tk.RIDGE
+                            self.label_arr[each_row][each_col]['bg'] =  "white"
                             self.label_arr[each_row][each_col]['width'] =  2
 
                             #tk.Label(self.root,text=" ", relief=tk.RIDGE, width=2).grid(row=each_row,column=each_col)
@@ -505,6 +506,7 @@ if __name__ == '__main__':
     if model.running:
         for i in range(int(epochs)):
             model.step()
+            #print(f"({model.grid.get_num_agents()}/{model.grid.get_empty_spots()})")
             print(f"[model]\tSimulating epoch {i+1}/{epochs}", end='\r')
             all_frames.append(store_frame(model))
     print("\n[model]\tSimulations complete!")

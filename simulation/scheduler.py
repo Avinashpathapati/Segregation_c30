@@ -48,7 +48,6 @@ class Scheduler():
             self.add(agent)
             agent.update = False
 
-
         # Prevent 0-agent crash
         if len(self.agents) == 0:
             print("Number of agents reached zero, exiting..")
@@ -89,11 +88,11 @@ class Scheduler():
         counter = 0
         for i in range(sum(agent.type == 1 for agent in self.agents.values())):
             if random.random() <= self.model.reproduction:
-                if float(len(self.model.grid.empty_spots)) >= 0.10*self.model.width*self.model.height:
+                if float(len(self.model.grid.empty_spots)) >= 0.05*self.model.width*self.model.height:
                     counter += 1
                     # Create agents, place them on the grid and add them to the scheduler
                     agent = model.Agent((None, None), self.model, agent_type=0, age=0)
-                    agent.pos = self.model.grid.place_agent_on_empty2(agent)
+                    self.model.grid.place_agent_on_empty(agent)
                     self.add(agent)
 
         # Add the number of births to the model for this epoch
