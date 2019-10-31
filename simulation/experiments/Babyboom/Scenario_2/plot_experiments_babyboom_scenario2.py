@@ -42,9 +42,9 @@ def main():
     plt.title('Number of total agents per epoch')
     plt.xlabel('Number of Epochs')
     plt.ylabel('Number of Agents')
-    plt.plot(df_means1['young_agents'], label='Young Agents')
-    plt.plot(df_means1['adults_agents'], label='Adult Agents')
-    plt.plot(df_means1['elderly_agents'], label='Elderly Agents')
+    plt.plot(df_means1['young_agents'], label='Young Agents', color='G')
+    plt.plot(df_means1['adults_agents'], label='Adult Agents', color='B')
+    plt.plot(df_means1['elderly_agents'], label='Elderly Agents', color='R')
     plt.legend()
     plt.show()
 
