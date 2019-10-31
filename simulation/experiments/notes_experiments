@@ -1,0 +1,30 @@
+New Experiment paramters: 
+
+Building Exerpiment:
+epochs, dim, density, homophily, ageing, reproduction, radius, playback_speed = \
+    500,    20,  0.5,    2,         10,      0.1,         2,      100
+
+Babyboom: 
+Scenario 1: 
+epochs, dim, density, homophily, ageing, reproduction, radius, playback_speed = \
+    500,    20,  0.5,    2,         10,      0.1,         2,      100
+
+Epoch 50: reproduction = 0.8
+Epoch 60: reproduction = 0.1
+
+Grid is relatively empty, then a lot of young agents spawn so its a sea of green. Then they all slowly become blue, then red and then they all die and
+the level of agents resets to roughly the previos level. 
+
+
+Scenario 2: 
+    epochs, dim, density, homophily, ageing, reproduction, radius, playback_speed = \
+    500,    20,  0.25,    2,         4,      0.25,         2,      10
+
+Epoch 50: reproduction = 0.85
+Epoch 60: reproduction = 0.1
+Epoch 75: reproduction = 0.25
+
+
+
+
+Density is no longer important!! 

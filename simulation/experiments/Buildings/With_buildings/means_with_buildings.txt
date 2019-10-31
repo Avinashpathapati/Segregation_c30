@@ -1,0 +1,9 @@
+mean happy 0.7339639694238125
+mean moves 46.91160000000001
+mean deaths 7.372
+mean births 7.356
+mean total_agents 229.79479999999998
+mean adults_agents 74.13080000000001
+mean young_agents 66.6732
+mean elderly_agents 88.99080000000001
+mean similar_neighbors 0.3192928135950317
