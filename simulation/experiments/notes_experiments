@@ -22,7 +22,12 @@ Scenario 2:
 
 Epoch 50: reproduction = 0.85
 Epoch 60: reproduction = 0.1
-Epoch 75: reproduction = 0.25
+Epoch 75: reproduction = 0.
+
+
+Is equilbirum possible?
+ epochs, dim, density, homophily, ageing, reproduction, radius, playback_speed = \
+    500,    20,  0.5,    2,         10,      0.1,         2,      10
 
 
 

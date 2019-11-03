@@ -100,7 +100,7 @@ class Model:
         self.similar_neighbors = []
 
         # Set up buildings
-        # FOR NOW: Just create 3 different buildings,
+        # Just create 3 different buildings,
         # one for each type, in top left, top right, and middle under
         coord = (int(self.width * 0.2), int(self.height * 0.2))
         building = Building(coord, self, 0)

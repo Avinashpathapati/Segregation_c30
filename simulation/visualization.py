@@ -8,10 +8,8 @@ from model import Model
 from matplotlib import pyplot as plt
 from termcolor import colored, cprint
 
-# Matplotlib test (?)
+# Set Matplotlib backend
 matplotlib.use("Qt5Agg")
-#print(matplotlib.get_backend())
-
 
 # We want to implement another window to control the simulation replay
 class Controller():
@@ -133,21 +131,17 @@ class Visualization():
             return False
         return True
 
-    # This code needs commenting!
+    # Check if there are buildings in range for the agent and return 
+    #the relevant buildings if any. 
     def check_facility_in_neighbourhood(self,cell_row,cell_col,radius):
-
-
         agent_type = self.model.grid[cell_row][cell_col]
         building_list = []
-
         for row_bound_iter in range(-radius, radius+1):
             for col_bound_iter in range(-radius, radius+1):
                 if self.is_valid_row_or_col(cell_row+row_bound_iter,cell_col+col_bound_iter):
                     c = self.model.grid[cell_row+row_bound_iter][cell_col+col_bound_iter]
                     if not c is None and c.building:
                         building_list.append(c.type)
-
-
         return building_list
 
     def text_gui(self, each_text_grid_itr):
@@ -460,12 +454,11 @@ def save_plotting_information_to_csv(filename, model):
     df['similar_neighbors'] = model.similar_neighbors
     df.to_csv(filename + '.csv', index=False)
 
-
 # Initialize input parameters of model
 if __name__ == '__main__':
     # Set default parameters here!
     epochs, dim, density, homophily, ageing, reproduction, radius, playback_speed = \
-    100,    20,  0.66,    2,         3,      0.33,         2,      100
+    500,    20,  0.5,    2,         10,      0.1,         2,      100
     prefix = "[init]\t"
     print(f"{prefix}Default parameters:")
     print(f"{prefix}\tepochs:\t\t{epochs}")
@@ -506,7 +499,6 @@ if __name__ == '__main__':
     if model.running:
         for i in range(int(epochs)):
             model.step()
-            #print(f"({model.grid.get_num_agents()}/{model.grid.get_empty_spots()})")
             print(f"[model]\tSimulating epoch {i+1}/{epochs}", end='\r')
             all_frames.append(store_frame(model))
     print("\n[model]\tSimulations complete!")
